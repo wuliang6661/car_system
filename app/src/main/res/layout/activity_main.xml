@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#f7f7f7"
+    android:orientation="vertical"
+    tools:context=".ui.MainActivity">
+
+
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:background="#ffffff"
+            android:orientation="horizontal">
+
+            <com.xyz.tabitem.BottmTabItem
+                android:id="@+id/main1"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:xyzIcon="@mipmap/main1"
+                app:xyzIconHeight="17dp"
+                app:xyzIconWidth="17dp"
+                app:xyzSelectIcon="@mipmap/main1_xz"
+                app:xyzSelectState="true"
+                app:xyzTitle="首页"
+                app:xyzTitleColor="#a6a6a6"
+                app:xyzTitleSelectColor="#2276d5"
+                app:xyzTitleSize="10sp"
+                app:xyzTitleTop="3dp" />
+
+
+            <com.xyz.tabitem.BottmTabItem
+                android:id="@+id/main2"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:xyzIcon="@mipmap/main2"
+                app:xyzIconHeight="17dp"
+                app:xyzIconWidth="17dp"
+                app:xyzSelectIcon="@mipmap/main2_xz"
+                app:xyzTitle="设置"
+                app:xyzTitleColor="#a6a6a6"
+                app:xyzTitleSelectColor="#2276d5"
+                app:xyzTitleSize="10sp"
+                app:xyzTitleTop="3dp" />
+
+
+            <com.xyz.tabitem.BottmTabItem
+                android:id="@+id/main3"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                app:xyzIcon="@mipmap/main3"
+                app:xyzIconHeight="17dp"
+                app:xyzIconWidth="17dp"
+                app:xyzSelectIcon="@mipmap/main3_xz"
+                app:xyzTitle="我的"
+                app:xyzTitleColor="#a6a6a6"
+                app:xyzTitleSelectColor="#2276d5"
+                app:xyzTitleSize="10sp"
+                app:xyzTitleTop="3dp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#F4F0F0" />
+
+    </RelativeLayout>
+
+</LinearLayout>
