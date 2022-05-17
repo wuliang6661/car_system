@@ -19,7 +19,7 @@ public class MyApplication extends Application {
 
     private static final String TAG = "MyApplication";
 
-    public static SPUtils spUtils;
+    private static SPUtils spUtils;
 
     public static boolean AppInBack = false;  //App 是否在后台
 
@@ -45,4 +45,10 @@ public class MyApplication extends Application {
         MultiDex.install(this);
     }
 
+
+    public static SPUtils getSpUtils(){
+        if (spUtils == null)
+            spUtils = SPUtils.getInstance(TAG);
+        return spUtils;
+    }
 }

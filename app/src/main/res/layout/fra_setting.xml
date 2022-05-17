@@ -106,9 +106,11 @@
                 </LinearLayout>
 
 
+
                 <com.hlbw.car_system.weight.SuperExpandableListView
                     android:id="@+id/expand_able_list"
                     android:layout_width="match_parent"
+                    android:background="@drawable/shape_slide_ffffff_buttom_conner_10"
                     android:layout_height="wrap_content" />
 
             </LinearLayout>

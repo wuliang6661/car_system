@@ -27,6 +27,8 @@ class SettingFragment : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         expandAbleList = rootView?.findViewById(R.id.expand_able_list)
+        val adapter = ExpandAbleAdapter(requireContext())
+        expandAbleList?.setAdapter(adapter)
     }
 
 }

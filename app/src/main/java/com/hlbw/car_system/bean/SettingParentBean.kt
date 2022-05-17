@@ -8,8 +8,10 @@ class SettingParentBean {
 
     var settingName: String? = null
 
-    val childSettings: MutableList<SettingChildBean> by lazy {
-        ArrayList()
+    var childSettings: MutableList<SettingChildBean>? = null
+
+    init {
+        childSettings = ArrayList()
     }
 
 }
