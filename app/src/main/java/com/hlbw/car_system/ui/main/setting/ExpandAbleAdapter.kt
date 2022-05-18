@@ -25,12 +25,10 @@ class ExpandAbleAdapter(context: Context?) : BaseExpandableListAdapter() {
 
 
     override fun getGroupCount(): Int {
-        LogUtils.e(list.size)
         return list.size
     }
 
     override fun getChildrenCount(p0: Int): Int {
-        LogUtils.e(list[p0].childSettings?.size!!)
         return list[p0].childSettings?.size!!
     }
 

@@ -26,6 +26,7 @@
 
 
     <RelativeLayout
+        android:id="@+id/user_layout"
         android:layout_width="match_parent"
         android:layout_height="174dp"
         android:background="@mipmap/mine_bg"

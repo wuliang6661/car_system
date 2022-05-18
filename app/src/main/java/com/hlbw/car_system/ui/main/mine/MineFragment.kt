@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.hlbw.car_system.R
 import com.hlbw.car_system.base.BaseFragment
+import com.hlbw.car_system.ui.LoginActivity
 
 class MineFragment : BaseFragment() {
 
@@ -21,4 +22,12 @@ class MineFragment : BaseFragment() {
         return rootView
     }
 
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        rootView?.findViewById<View>(R.id.user_layout)?.setOnClickListener {
+            gotoActivity(LoginActivity::class.java, false)
+        }
+    }
 }

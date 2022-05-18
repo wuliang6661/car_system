@@ -68,4 +68,5 @@ dependencies {
     implementation 'com.xyz.tabitem:tabitem:1.0.2'
     implementation 'me.yokeyword:fragmentationx:1.0.1'
     implementation 'com.makeramen:roundedimageview:2.3.0'
+    implementation 'com.otaliastudios:cameraview:2.7.2'
 }

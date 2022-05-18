@@ -7,4 +7,14 @@
         <item name="colorAccent">@color/white</item>
         <!-- Customize your theme here. -->
     </style>
+
+
+
+    <!--dialog去阴影-->
+    <style name="dialogNoBg">
+        <item name="android:background">#00000000</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
 </resources>

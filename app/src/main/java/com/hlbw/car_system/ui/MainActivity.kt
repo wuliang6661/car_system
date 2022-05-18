@@ -1,9 +1,12 @@
 package com.hlbw.car_system.ui
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.View
-import com.gyf.immersionbar.ImmersionBar
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.hlbw.car_system.R
 import com.hlbw.car_system.base.BaseActivity
 import com.hlbw.car_system.ui.main.none.NoneFragment1
@@ -41,6 +44,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         buttons.add(main2)
         buttons.add(main3)
         initFragment()
+        checkPrission()
     }
 
 
@@ -51,6 +55,27 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         main1?.setOnClickListener(this)
         main2?.setOnClickListener(this)
         main3?.setOnClickListener(this)
+    }
+
+
+    private fun checkPrission() {
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            !== PackageManager.PERMISSION_GRANTED
+            || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+            !== PackageManager.PERMISSION_GRANTED
+            || ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+            !== PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this, arrayOf(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.CAMERA
+                ), 1
+            )
+        } else {
+        }
     }
 
 

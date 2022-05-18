@@ -4,9 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import com.blankj.utilcode.util.SizeUtils
 import com.hlbw.car_system.R
 import com.hlbw.car_system.base.BaseFragment
+import com.hlbw.car_system.ui.CameraActivity
 import com.hlbw.car_system.utils.TextViewUtils
 
 /**
@@ -15,10 +19,11 @@ import com.hlbw.car_system.utils.TextViewUtils
  *
  * by wuliang
  */
-class HomeFragment : BaseFragment() {
+class HomeFragment : BaseFragment(),View.OnClickListener {
 
     var tvHint: TextView? = null
     var rootView: View? = null
+    var carMsg: View? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,15 +39,48 @@ class HomeFragment : BaseFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initView()
+        setListener()
     }
 
 
     private fun initView() {
-        tvHint = rootView?.findViewById(R.id.tv_hint);
+        tvHint = rootView?.findViewById(R.id.tv_hint)
+        carMsg = rootView?.findViewById(R.id.car_msg)
         TextViewUtils.stringInterceptionChangeRed(
             tvHint,
             "仅用于匹配车辆信息条目，无需完全纠正，",
             "整车照、大架号、拆解照、切割大架照种的识别结果仅用于匹配车辆信息条目，无需完全纠正，只要能匹配正确条目即可"
         )
+    }
+
+
+    private fun setListener() {
+        carMsg?.setOnClickListener {
+            showDialog()
+        }
+        rootView?.findViewById<View>(R.id.car_person_msg)?.setOnClickListener(this)
+    }
+
+
+    private fun showDialog() {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext(),R.style.dialogNoBg)
+        val view: View =
+            LayoutInflater.from(requireContext()).inflate(R.layout.dialog_car_message, null)
+        builder.setView(view)
+        val dialog : AlertDialog = builder.create()
+        view.findViewById<View>(R.id.close).setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+        val manager: WindowManager = requireActivity().windowManager
+        val display = manager.defaultDisplay
+        val window = dialog.window
+        val params = window?.attributes
+        params?.width = display.width - SizeUtils.dp2px(70f)
+        dialog.window?.attributes = params
+    }
+
+    override fun onClick(p0: View?) {
+        gotoActivity(CameraActivity::class.java,false)
     }
 }
