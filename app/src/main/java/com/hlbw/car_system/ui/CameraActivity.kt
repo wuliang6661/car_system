@@ -61,7 +61,7 @@ class CameraActivity : BaseActivity() {
         cameraProviderFuture.addListener({ // Used to bind the lifecycle of cameras to the lifecycle owner
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get() // Preview
             preview = Preview.Builder().build() //创建图片的 capture
-            imageCapture = ImageCapture.Builder().setFlashMode(ImageCapture.FLASH_MODE_OFF)
+            imageCapture = ImageCapture.Builder().setFlashMode(ImageCapture.FLASH_MODE_AUTO)
                 .build() // Select back camera
             val cameraSelector =
                 CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK).build()
