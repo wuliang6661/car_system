@@ -1,5 +1,10 @@
 package com.hlbw.car_system.api;
 
+import com.hlbw.car_system.bean.BaseResult;
+
+import retrofit2.http.POST;
+import rx.Observable;
+
 /**
  * Created by wuliang on 2017/3/9.
  * <p>
@@ -8,9 +13,13 @@ package com.hlbw.car_system.api;
 
 public interface HttpService {
 
-    String BASE_URL = "https://www.shsjyjszbfwzx.cn/";
+    String BASE_URL = "https://47.114.136.191:8080/";
 
-    String URL = BASE_URL + "shjz/";
+
+
+    @POST("appApi/uploadCarInfoImage")
+    Observable<BaseResult<String>> uploadCarInfoImg();
+
 
 
 }

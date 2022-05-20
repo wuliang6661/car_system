@@ -11,7 +11,7 @@ public class HttpServerImpl {
      */
     public static HttpService getService() {
         if (service == null)
-            service = ApiManager.getInstance().configRetrofit(HttpService.class, HttpService.URL);
+            service = ApiManager.getInstance().configRetrofit(HttpService.class, HttpService.BASE_URL);
         return service;
     }
 
