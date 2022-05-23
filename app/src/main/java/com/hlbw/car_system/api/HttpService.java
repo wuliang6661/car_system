@@ -4,6 +4,7 @@ import com.hlbw.car_system.bean.BaseResult;
 
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import rx.Observable;
 
@@ -16,6 +17,13 @@ import rx.Observable;
 public interface HttpService {
 
     String BASE_URL = "https://47.114.136.191:8080/";
+
+    /**
+     * 登录
+     */
+    @FormUrlEncoded
+    @POST("applogin")
+    Observable<BaseResult<String>> login(@Field("username") String username, @Field("password") String password);
 
 
     /**
@@ -31,8 +39,47 @@ public interface HttpService {
     /**
      * 车主信息上传
      */
+    @FormUrlEncoded
     @POST("appApi/uploadUserImage")
     Observable<BaseResult<String>> uploadUserImage(@Field("images") String images);
 
 
+    /**
+     * 整车照上传
+     */
+    @FormUrlEncoded
+    @POST("appApi/uploadVehicleImage")
+    Observable<BaseResult<String>> uploadVehicleImage(@Field("images") String images);
+
+
+    /**
+     * 大架号照上传
+     */
+    @FormUrlEncoded
+    @POST("appApi/uploadLargeImage")
+    Observable<BaseResult<String>> uploadLargeImage(@Field("images") String images);
+
+
+    /**
+     * 拆解照上传
+     */
+    @FormUrlEncoded
+    @POST("appApi/uploadDismantleImage")
+    Observable<BaseResult<String>> uploadDismantleImage(@Field("images") String images);
+
+
+    /**
+     * 注销证明上传
+     */
+    @FormUrlEncoded
+    @POST("appApi/uploadTextRecognizeImage")
+    Observable<BaseResult<String>> uploadTextRecognizeImage(@Field("images") String images);
+
+
+    /**
+     * 图片上传
+     */
+    @Multipart
+    @POST("common/upload/uploadImage1")
+    Observable<BaseResult<String>> uploadImage1(@Field("images") String images);
 }
