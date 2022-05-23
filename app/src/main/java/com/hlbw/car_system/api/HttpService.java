@@ -2,10 +2,12 @@ package com.hlbw.car_system.api;
 
 import com.hlbw.car_system.bean.BaseResult;
 
+import okhttp3.MultipartBody;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import rx.Observable;
 
 /**
@@ -81,5 +83,5 @@ public interface HttpService {
      */
     @Multipart
     @POST("common/upload/uploadImage1")
-    Observable<BaseResult<String>> uploadImage1(@Field("images") String images);
+    Observable<BaseResult<String>> uploadImage1(@Part MultipartBody.Part file);
 }
