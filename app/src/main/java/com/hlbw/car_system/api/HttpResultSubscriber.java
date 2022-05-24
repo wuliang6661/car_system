@@ -16,28 +16,15 @@ import rx.Subscriber;
 public abstract class HttpResultSubscriber<T> extends Subscriber<T> {
 
 
-
-    public HttpResultSubscriber() {
-
-    }
-
-
-
     @Override
     public void onNext(T t) {
         onSuccess(t);
-//        if (svProgressHUD != null && svProgressHUD.isShowing()) {
-//            svProgressHUD.dismiss();
-//        }
     }
 
 
     @Override
     public void onError(Throwable e) {
         e.printStackTrace();
-//        if (svProgressHUD != null && svProgressHUD.isShowing()) {
-//            svProgressHUD.dismiss();
-//        }
         if (e instanceof NetworkErrorException) {
             onFiled("网络出错，请检查您的网络！");
         } else if (e instanceof SocketException) {

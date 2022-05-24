@@ -1,12 +1,11 @@
 package com.hlbw.car_system.api;
 
-import com.blankj.utilcode.util.Utils;
 import com.hlbw.car_system.api.rx.RxResultHelper;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
-import id.zelory.compressor.Compressor;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -27,6 +26,16 @@ public class HttpServerImpl {
         return service;
     }
 
+    /**
+     * 登录
+     */
+    public static Observable<String> login(String phone,String password){
+        Map<String,Object> params = new HashMap<>();
+        params.put("username",phone);
+        params.put("password",password);
+        return getService().login(params).compose(RxResultHelper.httpRusult());
+    }
+
 
     /**
      * 上传文件
@@ -34,15 +43,15 @@ public class HttpServerImpl {
     public static Observable<String> updateImg(File file) {
         MultipartBody.Part body = MultipartBody.Part.createFormData("", "");
         if (file != null) {
-            File compressedImageFile;
-            try {
-                compressedImageFile = new Compressor(Utils.getApp()).setQuality(30).compressToFile(file);
-            } catch (IOException e) {
-                e.printStackTrace();
-                compressedImageFile = file;
-            }
-            RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), compressedImageFile);
-            body = MultipartBody.Part.createFormData("images", file.getName(), requestFile);
+//            File compressedImageFile;
+//            try {
+//                compressedImageFile = new Compressor(Utils.getApp()).setQuality(30).compressToFile(file);
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                compressedImageFile = file;
+//            }
+            RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), file);
+            body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
         }
         return getService().uploadImage1(body).compose(RxResultHelper.httpRusult());
     }

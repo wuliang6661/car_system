@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 
+import com.bigkoo.svprogresshud.SVProgressHUD;
 import com.blankj.utilcode.util.KeyboardUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.gyf.immersionbar.ImmersionBar;
@@ -24,6 +25,8 @@ import me.yokeyword.fragmentation.SupportActivity;
 public abstract class BaseActivity extends SupportActivity {
 
 
+    private SVProgressHUD svProgressHUD;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +34,7 @@ public abstract class BaseActivity extends SupportActivity {
         setContentView(getLayout());
         ImmersionBar.with(this).statusBarDarkFont(true).init();   //解决虚拟按键与状态栏沉浸冲突
         AppManager.getAppManager().addActivity(this);
+        svProgressHUD = new SVProgressHUD(this);
         // 避免从桌面启动程序后，会重新实例化入口类的activity
         if (!this.isTaskRoot()) {
             Intent intent = getIntent();
@@ -73,28 +77,22 @@ public abstract class BaseActivity extends SupportActivity {
 
 
     /**
-     * 设置返回
+     * 显示加载进度弹窗
      */
-//    protected void goBack() {
-//        LinearLayout imageView = findViewById(R.id.back);
-//        imageView.setVisibility(View.VISIBLE);
-//        imageView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                finish();
-//            }
-//        });
-//    }
-//
-//    /**
-//     * 设置标题
-//     *
-//     * @param title
-//     */
-//    protected void setTitleText(String title) {
-//        TextView titleTex = findViewById(R.id.title_text);
-//        titleTex.setText(title);
-//    }
+    protected void showProgress() {
+        svProgressHUD.showWithStatus("加载中...", SVProgressHUD.SVProgressHUDMaskType.BlackCancel);
+    }
+
+    /**
+     * 停止弹窗
+     */
+    protected void stopProgress() {
+        if (svProgressHUD.isShowing()) {
+            svProgressHUD.dismiss();
+        }
+    }
+
+
     protected void showToast(String message) {
         ToastUtils.showShort(message);
     }

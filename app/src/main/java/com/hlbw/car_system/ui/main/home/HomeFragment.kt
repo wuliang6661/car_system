@@ -10,7 +10,9 @@ import androidx.appcompat.app.AlertDialog
 import com.blankj.utilcode.util.SizeUtils
 import com.hlbw.car_system.R
 import com.hlbw.car_system.base.BaseFragment
+import com.hlbw.car_system.base.MyApplication
 import com.hlbw.car_system.ui.CameraActivity
+import com.hlbw.car_system.ui.LoginActivity
 import com.hlbw.car_system.utils.TextViewUtils
 
 /**
@@ -19,7 +21,7 @@ import com.hlbw.car_system.utils.TextViewUtils
  *
  * by wuliang
  */
-class HomeFragment : BaseFragment(),View.OnClickListener {
+class HomeFragment : BaseFragment(), View.OnClickListener {
 
     var tvHint: TextView? = null
     var rootView: View? = null
@@ -63,11 +65,11 @@ class HomeFragment : BaseFragment(),View.OnClickListener {
 
 
     private fun showDialog() {
-        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext(),R.style.dialogNoBg)
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext(), R.style.dialogNoBg)
         val view: View =
             LayoutInflater.from(requireContext()).inflate(R.layout.dialog_car_message, null)
         builder.setView(view)
-        val dialog : AlertDialog = builder.create()
+        val dialog: AlertDialog = builder.create()
         view.findViewById<View>(R.id.close).setOnClickListener {
             dialog.dismiss()
         }
@@ -81,6 +83,10 @@ class HomeFragment : BaseFragment(),View.OnClickListener {
     }
 
     override fun onClick(p0: View?) {
-        gotoActivity(CameraActivity::class.java,false)
+        if (MyApplication.getToken().isEmpty()) {
+            gotoActivity(LoginActivity::class.java, false)
+            return
+        }
+        gotoActivity(CameraActivity::class.java, false)
     }
 }

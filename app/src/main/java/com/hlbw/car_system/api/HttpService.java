@@ -2,7 +2,10 @@ package com.hlbw.car_system.api;
 
 import com.hlbw.car_system.bean.BaseResult;
 
+import java.util.Map;
+
 import okhttp3.MultipartBody;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Multipart;
@@ -23,9 +26,8 @@ public interface HttpService {
     /**
      * 登录
      */
-    @FormUrlEncoded
     @POST("applogin")
-    Observable<BaseResult<String>> login(@Field("username") String username, @Field("password") String password);
+    Observable<BaseResult<String>> login(@Body Map<String,Object> params);
 
 
     /**

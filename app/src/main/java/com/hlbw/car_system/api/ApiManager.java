@@ -2,6 +2,10 @@ package com.hlbw.car_system.api;
 
 import android.util.Log;
 
+import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.StringUtils;
+import com.hlbw.car_system.base.MyApplication;
+
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.Interceptor;
@@ -35,12 +39,12 @@ public class ApiManager {
         builder.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
         builder.writeTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
         builder.readTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
+        builder.addInterceptor(headerInterceptor);
         HttpLoggingInterceptor.Level level = HttpLoggingInterceptor.Level.BODY;
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(message -> Log.i(TAG, "log: " + message));
         loggingInterceptor.setLevel(level);
         OkHttpClientNoVerifyUtil.createClientBuilder_noVerify(builder);
         builder.addInterceptor(loggingInterceptor);
-        builder.addInterceptor(headerInterceptor);
     }
 
     private static class SingletonHolder {
@@ -75,7 +79,7 @@ public class ApiManager {
      * 文件下载请求代理
      */
     HttpService downloadConfigRetrofit(Class<HttpService> httpServiceClass, String url,
-                                                          DownloadResponseBody.DownloadListener downloadListener) {
+                                       DownloadResponseBody.DownloadListener downloadListener) {
         //手动创建一个OkHttpClient并设置超时时间
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS);
@@ -120,11 +124,11 @@ public class ApiManager {
     private Interceptor headerInterceptor = chain -> {
         Request request = null;
         // 以拦截到的请求为基础创建一个新的请求对象，然后插入Header
-//        request = chain.request().newBuilder()
-//                .addHeader("user-token", StringUtils.isEmpty(MyApplication.token) ? "" : MyApplication.token)
-//                .addHeader("client-type", "android")
-//                .addHeader("client-version", AppUtils.getAppVersionName())
-//                .build();
+        request = chain.request().newBuilder()
+                .addHeader("Authorization", MyApplication.getToken())
+//                .addHeader("Authorization", "eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6IjVjMDNhZTQ5ODc5MjRiMzRmMzJkZGU1MjY4OTFhMDM0In0.bw0ZyvftoJ4PDUEkBuiTW-eOjHSMRjM2u5E8r78CymSqPhuksdzH6KS_knDmKKWQrRMkX0pmtaVjBKU__HjVcA")
+                .build();
+        LogUtils.e("增加token");
         return chain.proceed(request);
     };
 

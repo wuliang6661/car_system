@@ -3,6 +3,7 @@ package com.hlbw.car_system.api.rx;
 import android.util.Log;
 
 import com.blankj.utilcode.util.FileUtils;
+import com.hlbw.car_system.api.DialogCallException;
 import com.hlbw.car_system.bean.BaseResult;
 
 import java.io.BufferedInputStream;
@@ -29,6 +30,8 @@ public class RxResultHelper {
                     Log.d(TAG, "call() called with: mDYResponse = [" + mDYResponse + "]");
                     if (mDYResponse.surcess()) {
                         return createData(mDYResponse.getData());
+                    } else if (mDYResponse.isDialog()) {
+                        return Observable.error(new DialogCallException(mDYResponse.getMsg()));
                     } else {
                         return Observable.error(new RuntimeException(mDYResponse.getMsg()));
                     }

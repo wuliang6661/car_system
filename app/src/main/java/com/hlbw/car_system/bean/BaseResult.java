@@ -23,9 +23,12 @@ public class BaseResult<T> {
     private T data;
 
     public boolean surcess() {
-        return code == 0;
+        return code == 200;
     }
 
+    public boolean isDialog(){
+        return code == 500;
+    }
 
     public String getStatus() {
         return status;

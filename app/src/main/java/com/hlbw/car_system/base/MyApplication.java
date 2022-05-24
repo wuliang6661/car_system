@@ -23,8 +23,6 @@ public class MyApplication extends Application {
 
     public static boolean AppInBack = false;  //App 是否在后台
 
-    public static String token;
-
 
     @Override
     public void onCreate() {
@@ -38,7 +36,6 @@ public class MyApplication extends Application {
     }
 
 
-
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -46,9 +43,18 @@ public class MyApplication extends Application {
     }
 
 
-    public static SPUtils getSpUtils(){
+    public static SPUtils getSpUtils() {
         if (spUtils == null)
             spUtils = SPUtils.getInstance(TAG);
         return spUtils;
+    }
+
+
+    public static String getToken() {
+        return getSpUtils().getString("token", "");
+    }
+
+    public static void saveToken(String token) {
+        getSpUtils().put("token", token);
     }
 }

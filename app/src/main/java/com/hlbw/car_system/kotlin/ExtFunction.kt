@@ -1,11 +1,10 @@
 @file:JvmName("FunctionUtils")
 
-package com.hlbw.car_system.utils
+package com.hlbw.car_system.kotlin
 
 import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
-import android.util.DisplayMetrics
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
@@ -13,7 +12,6 @@ import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.blankj.utilcode.util.SizeUtils
 import com.bumptech.glide.Glide
@@ -74,7 +72,6 @@ fun View?.visibleGone(visible: Boolean) {
     this?.visibility = if (visible) View.VISIBLE else View.GONE
 }
 
-fun <T> Any?.asTo(): T? = this as? T
 
 fun Context.getActivityFromContext(): Activity? {
     var context = this
@@ -128,26 +125,4 @@ inline fun ktTry(block: () -> Unit) {
     }
 }
 
-fun String.filterLinkBreakTrim(): String {
-    return this.replace("\n", " ").trim()
-}
-
-fun RecyclerView.smoothScrollToPositionEnd(adapterPosition: Int) {
-    if (adapterPosition < 0) return
-    ktTry {
-        if (layoutManager is LinearLayoutManager) {
-            val scroller = object : androidx.recyclerview.widget.LinearSmoothScroller(context) {
-                override fun getVerticalSnapPreference(): Int {
-                    return SNAP_TO_END
-                }
-
-                override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
-                    return 1f / displayMetrics.density
-                }
-            }
-            scroller.targetPosition = adapterPosition
-            (layoutManager as LinearLayoutManager).startSmoothScroll(scroller)
-        }
-    }
-}
 

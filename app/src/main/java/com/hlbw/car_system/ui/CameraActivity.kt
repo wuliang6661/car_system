@@ -5,12 +5,13 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import com.hlbw.car_system.R
+import com.hlbw.car_system.api.HttpResultSubscriber
+import com.hlbw.car_system.api.HttpServerImpl
 import com.hlbw.car_system.base.BaseActivity
 import java.io.File
 import java.text.SimpleDateFormat
@@ -79,27 +80,45 @@ class CameraActivity : BaseActivity() {
     private fun takePhoto() { // Get a stable reference of the modifiable image capture use case
         val imageCapture = imageCapture ?: return
         // Create timestamped output file to hold the image
-        val photoFile = File(outputDirectory,
-                             SimpleDateFormat(FILENAME_FORMAT,
-                                              Locale.US).format(System.currentTimeMillis()) + ".jpg")
+        val photoFile = File(
+            outputDirectory,
+            SimpleDateFormat(
+                FILENAME_FORMAT,
+                Locale.US
+            ).format(System.currentTimeMillis()) + ".jpg"
+        )
         // Create output options object which contains file + metadata
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
         // Setup image capture listener which is triggered after photo has
         // been taken
         imageCapture.takePicture(outputOptions,
-                                 ContextCompat.getMainExecutor(this),
-                                 object : ImageCapture.OnImageSavedCallback {
-                                     override fun onError(exc: ImageCaptureException) {
-                                         Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
-                                     }
+            ContextCompat.getMainExecutor(this),
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onError(exc: ImageCaptureException) {
+                    Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
+                }
 
-                                     override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                                         val savedUri = Uri.fromFile(photoFile)
-                                         val msg = "Photo capture succeeded: $savedUri"
-                                         Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-                                         Log.d(TAG, msg)
-                                     }
-                                 })
+                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                    val savedUri = Uri.fromFile(photoFile)
+                    val msg = "Photo capture succeeded: $savedUri"
+                    uploadImg(photoFile)
+                    Log.d(TAG, msg)
+                }
+            })
+    }
+
+
+    private fun uploadImg(file: File) {
+        showProgress()
+        HttpServerImpl.updateImg(file).subscribe(object : HttpResultSubscriber<String>() {
+            override fun onSuccess(t: String?) {
+            }
+
+            override fun onFiled(message: String?) {
+                stopProgress()
+                showToast(message)
+            }
+        })
     }
 
 
