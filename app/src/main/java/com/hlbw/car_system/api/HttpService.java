@@ -84,6 +84,6 @@ public interface HttpService {
      * 图片上传
      */
     @Multipart
-    @POST("common/upload/uploadImage1")
+    @POST("common/upload/uploadImage2")
     Observable<BaseResult<String>> uploadImage1(@Part MultipartBody.Part file);
 }

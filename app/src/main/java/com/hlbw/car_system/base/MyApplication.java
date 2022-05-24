@@ -28,10 +28,8 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         CustomActivityOnCrash.install(this);
-        /***初始化工具类*/
         Utils.init(this);
         spUtils = SPUtils.getInstance(TAG);
-
         registerActivityLifecycleCallbacks(new AppLifecycleHandler());
     }
 
