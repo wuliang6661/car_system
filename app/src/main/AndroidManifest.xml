@@ -46,6 +46,12 @@
             android:screenOrientation="fullSensor" />
 
 
+        <!--分析界面-->
+        <activity
+            android:name=".ui.CarenaResultActivity"
+            android:screenOrientation="fullSensor" />
+
+
         <!--适配华为（huawei）刘海屏-->
         <meta-data
             android:name="android.notch_support"
@@ -54,6 +60,8 @@
         <meta-data
             android:name="notch.config"
             android:value="portrait|landscape" />
+
+
     </application>
 
 </manifest>

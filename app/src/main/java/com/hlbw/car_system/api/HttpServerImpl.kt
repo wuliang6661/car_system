@@ -1,58 +1,63 @@
-package com.hlbw.car_system.api;
+package com.hlbw.car_system.api
 
-import com.hlbw.car_system.api.rx.RxResultHelper;
+import com.hlbw.car_system.api.rx.RxResultHelper
+import com.hlbw.car_system.bean.CarInfoBean
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import rx.Observable
+import java.io.File
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import rx.Observable;
-
-public class HttpServerImpl {
-
-    private static HttpService service;
-
+object HttpServerImpl {
     /**
      * 获取代理对象
      *
      * @return
      */
-    public static HttpService getService() {
-        if (service == null)
-            service = ApiManager.getInstance().configRetrofit(HttpService.class, HttpService.BASE_URL);
-        return service;
-    }
+    private var service: HttpService? = null
+        get() {
+            if (field == null) field = ApiManager.getInstance().configRetrofit(
+                HttpService::class.java, HttpService.BASE_URL
+            )
+            return field
+        }
 
     /**
      * 登录
      */
-    public static Observable<String> login(String phone,String password){
-        Map<String,Object> params = new HashMap<>();
-        params.put("username",phone);
-        params.put("password",password);
-        return getService().login(params).compose(RxResultHelper.httpRusult());
+    fun login(phone: String, password: String): Observable<String> {
+        val params: MutableMap<String, Any> = HashMap()
+        params["username"] = phone
+        params["password"] = password
+        return service!!.login(params).compose(RxResultHelper.httpRusult())
     }
 
+    /**
+     * 分析图片
+     */
+    fun uploadCarInfoImg(images: String, type: Int): Observable<CarInfoBean> {
+        val params: MutableMap<String, Any> = HashMap()
+        params["images"] = images
+        params["type"] = type
+        return service!!.uploadCarInfoImg(params).compose(RxResultHelper.httpRusult())
+    }
+
+    /**
+     * 保存数据
+     */
+    fun saveVehicle(infoBean: CarInfoBean?): Observable<CarInfoBean> {
+        return service!!.saveVehicle(infoBean).compose(RxResultHelper.httpRusult())
+    }
 
     /**
      * 上传文件
      */
-    public static Observable<String> updateImg(File file) {
-        MultipartBody.Part body = MultipartBody.Part.createFormData("", "");
+    fun updateImg(file: File?): Observable<String> {
+        var body = MultipartBody.Part.createFormData("", "")
         if (file != null) {
-//            File compressedImageFile;
-//            try {
-//                compressedImageFile = new Compressor(Utils.getApp()).setQuality(30).compressToFile(file);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//                compressedImageFile = file;
-//            }
-            RequestBody requestFile = RequestBody.create(MediaType.parse("image/jpg"), file);
-            body = MultipartBody.Part.createFormData("file", file.getName(), requestFile);
+            val requestFile = file.asRequestBody("image/jpg".toMediaTypeOrNull())
+            body = MultipartBody.Part.createFormData("file", file.name, requestFile)
         }
-        return getService().uploadImage1(body).compose(RxResultHelper.httpRusult());
+        return service!!.uploadImage1(body).compose(RxResultHelper.httpRusult())
     }
 }

@@ -82,11 +82,20 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
         dialog.window?.attributes = params
     }
 
-    override fun onClick(p0: View?) {
+    override fun onClick(p0: View) {
         if (MyApplication.getToken().isEmpty()) {
             gotoActivity(LoginActivity::class.java, false)
             return
         }
-        gotoActivity(CameraActivity::class.java, false)
+        var type = 0
+        when (p0.id) {
+            R.id.car_person_msg -> type = 5
+            R.id.zhengchezhao -> type = 6
+            R.id.dajiahaozhao -> type = 7
+            R.id.chaijiezhao -> type = 8
+        }
+        val bundle = Bundle()
+        bundle.putInt("type", type)
+        gotoActivity(CameraActivity::class.java, bundle, false)
     }
 }

@@ -12,6 +12,9 @@ import com.hlbw.car_system.R
 import com.hlbw.car_system.api.HttpResultSubscriber
 import com.hlbw.car_system.api.HttpServerImpl
 import com.hlbw.car_system.base.BaseActivity
+import id.zelory.compressor.Compressor
+import id.zelory.compressor.constraint.quality
+import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -35,6 +38,8 @@ class CameraActivity : BaseActivity() {
         findViewById(R.id.viewFinder)
     }
 
+    private var type: Int = 0
+
     override fun getLayout(): Int {
         return R.layout.act_carema
     }
@@ -43,6 +48,9 @@ class CameraActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        intent.extras?.let {
+            type = it.getInt("type")
+        }
         findViewById<View>(R.id.back).setOnClickListener {
             finish()
         } // Request camera permissions
@@ -70,49 +78,61 @@ class CameraActivity : BaseActivity() {
             } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
             }
-                                         }, ContextCompat.getMainExecutor(this))
+        }, ContextCompat.getMainExecutor(this))
     }
 
 
     private fun takePhoto() { // Get a stable reference of the modifiable image capture use case
         val imageCapture =
             imageCapture ?: return // Create timestamped output file to hold the image
-        val photoFile = File(outputDirectory,
-                             SimpleDateFormat(FILENAME_FORMAT,
-                                              Locale.US).format(System.currentTimeMillis()) + ".jpg") // Create output options object which contains file + metadata
+        val photoFile = File(
+            outputDirectory,
+            SimpleDateFormat(
+                FILENAME_FORMAT,
+                Locale.US
+            ).format(System.currentTimeMillis()) + ".jpg"
+        ) // Create output options object which contains file + metadata
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile)
             .build() // Setup image capture listener which is triggered after photo has
         // been taken
         imageCapture.takePicture(outputOptions,
-                                 ContextCompat.getMainExecutor(this),
-                                 object : ImageCapture.OnImageSavedCallback {
-                                     override fun onError(exc: ImageCaptureException) {
-                                         Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
-                                     }
+            ContextCompat.getMainExecutor(this),
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onError(exc: ImageCaptureException) {
+                    Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
+                }
 
-                                     override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                                         val savedUri = Uri.fromFile(photoFile)
-                                         val msg = "Photo capture succeeded: $savedUri"
-                                         uploadImg(photoFile)
-                                         Log.d(TAG, msg)
-                                     }
-                                 })
+                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                    val savedUri = Uri.fromFile(photoFile)
+                    val msg = "Photo capture succeeded: $savedUri"
+                    uploadImg(photoFile)
+                    Log.d(TAG, msg)
+                }
+            })
     }
 
 
     private fun uploadImg(file: File) {
         showProgress()
-        HttpServerImpl.updateImg(file).subscribe(object : HttpResultSubscriber<String>() {
-            override fun onSuccess(t: String?) {
-                stopProgress()
-
+        runBlocking {
+            val compressedImageFile = Compressor.compress(this@CameraActivity, file){
+                quality(30)
             }
+            HttpServerImpl.updateImg(compressedImageFile).subscribe(object : HttpResultSubscriber<String>() {
+                override fun onSuccess(t: String?) {
+                    stopProgress()
+                    val bundle = Bundle()
+                    bundle.putInt("type", type)
+                    bundle.putString("image", t)
+                    gotoActivity(CarenaResultActivity::class.java, bundle, true)
+                }
 
-            override fun onFiled(message: String?) {
-                stopProgress()
-                showToast(message)
-            }
-        })
+                override fun onFiled(message: String?) {
+                    stopProgress()
+                    showToast(message)
+                }
+            })
+        }
     }
 
 

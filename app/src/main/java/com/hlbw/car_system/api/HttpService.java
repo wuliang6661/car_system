@@ -1,13 +1,12 @@
 package com.hlbw.car_system.api;
 
 import com.hlbw.car_system.bean.BaseResult;
+import com.hlbw.car_system.bean.CarInfoBean;
 
 import java.util.Map;
 
 import okhttp3.MultipartBody;
 import retrofit2.http.Body;
-import retrofit2.http.Field;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -27,57 +26,23 @@ public interface HttpService {
      * 登录
      */
     @POST("applogin")
-    Observable<BaseResult<String>> login(@Body Map<String,Object> params);
+    Observable<BaseResult<String>> login(@Body Map<String, Object> params);
 
 
     /**
      * 车辆信息上传
      * images : ""  图片,多图片用","拼接
-     * type: ""   1:识别车辆登记证获取车辆信息 2:识别车辆行驶证获取信息 3:查验凭证获取车辆信息
+     * type: ""    1:登记证书信息 2:行驶证信息 3:查验凭证获取车辆信息4.非盗抢证明信息  5.车主身份证信息 6.整车照上传 7.大架号照上传 8.拆解照上传
      */
-    @FormUrlEncoded
     @POST("appApi/uploadCarInfoImage")
-    Observable<BaseResult<String>> uploadCarInfoImg(@Field("images") String images, @Field("type") int type);
+    Observable<BaseResult<CarInfoBean>> uploadCarInfoImg(@Body Map<String, Object> params);
 
 
     /**
-     * 车主信息上传
+     * 保存车辆信息
      */
-    @FormUrlEncoded
-    @POST("appApi/uploadUserImage")
-    Observable<BaseResult<String>> uploadUserImage(@Field("images") String images);
-
-
-    /**
-     * 整车照上传
-     */
-    @FormUrlEncoded
-    @POST("appApi/uploadVehicleImage")
-    Observable<BaseResult<String>> uploadVehicleImage(@Field("images") String images);
-
-
-    /**
-     * 大架号照上传
-     */
-    @FormUrlEncoded
-    @POST("appApi/uploadLargeImage")
-    Observable<BaseResult<String>> uploadLargeImage(@Field("images") String images);
-
-
-    /**
-     * 拆解照上传
-     */
-    @FormUrlEncoded
-    @POST("appApi/uploadDismantleImage")
-    Observable<BaseResult<String>> uploadDismantleImage(@Field("images") String images);
-
-
-    /**
-     * 注销证明上传
-     */
-    @FormUrlEncoded
-    @POST("appApi/uploadTextRecognizeImage")
-    Observable<BaseResult<String>> uploadTextRecognizeImage(@Field("images") String images);
+    @POST("appApi/saveVehicle")
+    Observable<BaseResult<CarInfoBean>> saveVehicle(@Body CarInfoBean bean);
 
 
     /**

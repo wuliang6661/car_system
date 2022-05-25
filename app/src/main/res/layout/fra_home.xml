@@ -9,8 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="94dp"
         android:background="@drawable/shape_color_1b31ff_to_28dcff"
-        android:gravity="center_horizontal|bottom"
         android:elevation="30dp"
+        android:gravity="center_horizontal|bottom"
         android:paddingBottom="16dp">
 
 
@@ -103,6 +103,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/zhengchezhao"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -114,6 +115,7 @@
                     android:layout_height="wrap_content" />
 
                 <ImageView
+                    android:id="@+id/dajiahaozhao"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -130,6 +132,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/chaijiezhao"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -141,6 +144,7 @@
                     android:layout_height="wrap_content" />
 
                 <ImageView
+                    android:id="@+id/qiegedajiaohaozhao"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -157,6 +161,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/dianchizhengming"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -168,6 +173,7 @@
                     android:layout_height="wrap_content" />
 
                 <ImageView
+                    android:id="@+id/zhuxiaozhengming"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
