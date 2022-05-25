@@ -1,6 +1,5 @@
 package com.hlbw.car_system.ui
 
-import android.Manifest
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -46,10 +45,8 @@ class CameraActivity : BaseActivity() {
 
         findViewById<View>(R.id.back).setOnClickListener {
             finish()
-        }
-        // Request camera permissions
-        startCamera()
-        // Setup the listener for take photo button
+        } // Request camera permissions
+        startCamera() // Setup the listener for take photo button
         takePhoto.setOnClickListener { takePhoto() }
         outputDirectory = getOutputDirectory()
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -73,38 +70,33 @@ class CameraActivity : BaseActivity() {
             } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
             }
-        }, ContextCompat.getMainExecutor(this))
+                                         }, ContextCompat.getMainExecutor(this))
     }
 
 
     private fun takePhoto() { // Get a stable reference of the modifiable image capture use case
-        val imageCapture = imageCapture ?: return
-        // Create timestamped output file to hold the image
-        val photoFile = File(
-            outputDirectory,
-            SimpleDateFormat(
-                FILENAME_FORMAT,
-                Locale.US
-            ).format(System.currentTimeMillis()) + ".jpg"
-        )
-        // Create output options object which contains file + metadata
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
-        // Setup image capture listener which is triggered after photo has
+        val imageCapture =
+            imageCapture ?: return // Create timestamped output file to hold the image
+        val photoFile = File(outputDirectory,
+                             SimpleDateFormat(FILENAME_FORMAT,
+                                              Locale.US).format(System.currentTimeMillis()) + ".jpg") // Create output options object which contains file + metadata
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile)
+            .build() // Setup image capture listener which is triggered after photo has
         // been taken
         imageCapture.takePicture(outputOptions,
-            ContextCompat.getMainExecutor(this),
-            object : ImageCapture.OnImageSavedCallback {
-                override fun onError(exc: ImageCaptureException) {
-                    Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
-                }
+                                 ContextCompat.getMainExecutor(this),
+                                 object : ImageCapture.OnImageSavedCallback {
+                                     override fun onError(exc: ImageCaptureException) {
+                                         Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
+                                     }
 
-                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val savedUri = Uri.fromFile(photoFile)
-                    val msg = "Photo capture succeeded: $savedUri"
-                    uploadImg(photoFile)
-                    Log.d(TAG, msg)
-                }
-            })
+                                     override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                                         val savedUri = Uri.fromFile(photoFile)
+                                         val msg = "Photo capture succeeded: $savedUri"
+                                         uploadImg(photoFile)
+                                         Log.d(TAG, msg)
+                                     }
+                                 })
     }
 
 
@@ -112,6 +104,8 @@ class CameraActivity : BaseActivity() {
         showProgress()
         HttpServerImpl.updateImg(file).subscribe(object : HttpResultSubscriber<String>() {
             override fun onSuccess(t: String?) {
+                stopProgress()
+
             }
 
             override fun onFiled(message: String?) {
@@ -132,7 +126,5 @@ class CameraActivity : BaseActivity() {
     companion object {
         private const val TAG = "CameraXBasic"
         private const val FILENAME_FORMAT = "yyyy-MM-dd-HH-mm-ss-SSS"
-        private const val REQUEST_CODE_PERMISSIONS = 10
-        private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
     }
 }
