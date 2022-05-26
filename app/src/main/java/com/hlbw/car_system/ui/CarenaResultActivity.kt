@@ -84,7 +84,7 @@ class CarenaResultActivity : BaseActivity() {
                     bobaoText += it.name
                     bobaoText += it.value
                 }
-                SystemTTS.getInstance(this)?.play(bobaoText)
+                ttsVoice?.play(bobaoText)
             }
         }
     }
@@ -217,5 +217,10 @@ class CarenaResultActivity : BaseActivity() {
         override fun convert(holder: LGViewHolder?, t: ItemVoListBean?, position: Int) {
             holder?.setText(R.id.name, "${t?.name} : ${t?.value}")
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        ttsVoice?.destroy()
     }
 }

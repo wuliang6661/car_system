@@ -27,7 +27,6 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
     var tvHint: TextView? = null
     var rootView: View? = null
     var carMsg: View? = null
-    private var ttsVoice: SystemTTS? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,7 +41,6 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ttsVoice = SystemTTS.getInstance(requireContext());
         initView()
         setListener()
     }
@@ -64,9 +62,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
             showDialog()
         }
         rootView?.findViewById<View>(R.id.car_person_msg)?.setOnClickListener(this)
-        rootView?.findViewById<View>(R.id.zhengchezhao)?.setOnClickListener {
-            ttsVoice?.play("阅读内容")
-        }
+        rootView?.findViewById<View>(R.id.zhengchezhao)?.setOnClickListener(this)
     }
 
 
