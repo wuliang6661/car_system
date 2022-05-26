@@ -77,4 +77,5 @@ dependencies {
     implementation "androidx.camera:camera-view:1.0.0-alpha10"
     implementation 'com.bigkoo:svprogresshud:1.0.6'
     implementation 'id.zelory:compressor:3.0.1'
+    implementation 'com.zhihu.android:matisse:0.5.3-beta3'
 }

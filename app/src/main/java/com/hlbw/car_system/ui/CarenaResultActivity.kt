@@ -15,9 +15,12 @@ import com.hlbw.car_system.R
 import com.hlbw.car_system.api.HttpResultSubscriber
 import com.hlbw.car_system.api.HttpServerImpl
 import com.hlbw.car_system.base.BaseActivity
+import com.hlbw.car_system.base.MyApplication
 import com.hlbw.car_system.bean.CarInfoBean
 import com.hlbw.car_system.bean.ItemVoListBean
+import com.hlbw.car_system.kotlin.gone
 import com.hlbw.car_system.kotlin.loadImageUrl
+import com.hlbw.car_system.kotlin.visible
 import com.hlbw.car_system.utils.AppManager
 import com.hlbw.car_system.utils.SystemTTS
 import com.hlbw.car_system.weight.lgrecycleadapter.LGRecycleViewAdapter
@@ -76,6 +79,11 @@ class CarenaResultActivity : BaseActivity() {
             val bundle = Bundle()
             bundle.putInt("type", type)
             gotoActivity(CameraActivity::class.java, bundle, true)
+        }
+        if (MyApplication.getSpUtils().getBoolean("isOpenBoBao",true)) {
+            findViewById<View>(R.id.bobao).visible()
+        } else {
+            findViewById<View>(R.id.bobao).gone()
         }
         findViewById<View>(R.id.bobao).setOnClickListener {
             carInfo?.let { data ->

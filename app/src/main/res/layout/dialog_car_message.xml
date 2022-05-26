@@ -17,9 +17,9 @@
             android:id="@+id/close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingLeft="18dp"
             android:paddingTop="18dp"
             android:paddingRight="18dp"
-            android:paddingLeft="18dp"
             android:src="@mipmap/close" />
 
 
@@ -36,6 +36,7 @@
 
 
     <TextView
+        android:id="@+id/dengjizheng"
         android:layout_width="match_parent"
         android:layout_height="36dp"
         android:layout_marginLeft="32dp"
@@ -49,6 +50,7 @@
 
 
     <TextView
+        android:id="@+id/xingshizheng"
         android:layout_width="match_parent"
         android:layout_height="36dp"
         android:layout_marginLeft="32dp"
@@ -62,6 +64,7 @@
 
 
     <TextView
+        android:id="@+id/xinxidan"
         android:layout_width="match_parent"
         android:layout_height="36dp"
         android:layout_marginLeft="32dp"
@@ -75,6 +78,7 @@
 
 
     <TextView
+        android:id="@+id/chayanpinzheng"
         android:layout_width="match_parent"
         android:layout_height="36dp"
         android:layout_marginLeft="32dp"

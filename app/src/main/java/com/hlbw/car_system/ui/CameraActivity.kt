@@ -1,5 +1,6 @@
 package com.hlbw.car_system.ui
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -12,6 +13,12 @@ import com.hlbw.car_system.R
 import com.hlbw.car_system.api.HttpResultSubscriber
 import com.hlbw.car_system.api.HttpServerImpl
 import com.hlbw.car_system.base.BaseActivity
+import com.hlbw.car_system.base.MyApplication
+import com.hlbw.car_system.kotlin.gone
+import com.hlbw.car_system.kotlin.visible
+import com.hlbw.car_system.utils.UriUtils
+import com.zhihu.matisse.Matisse
+import com.zhihu.matisse.MimeType
 import id.zelory.compressor.Compressor
 import id.zelory.compressor.constraint.quality
 import kotlinx.coroutines.runBlocking
@@ -20,6 +27,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+
 
 class CameraActivity : BaseActivity() {
 
@@ -53,7 +61,20 @@ class CameraActivity : BaseActivity() {
         }
         findViewById<View>(R.id.back).setOnClickListener {
             finish()
-        } // Request camera permissions
+        }
+        if (MyApplication.getSpUtils().getBoolean("isOpenXiangCe",true)) {
+            findViewById<View>(R.id.go_xiangce).visible()
+        } else {
+            findViewById<View>(R.id.go_xiangce).gone()
+        }
+        findViewById<View>(R.id.go_xiangce).setOnClickListener {
+            Matisse.from(this)
+                .choose(MimeType.of(MimeType.JPEG)) //ofImage()
+                .countable(false)
+                .maxSelectable(1)
+                .forResult(0x11)
+        }
+        // Request camera permissions
         startCamera() // Setup the listener for take photo button
         takePhoto.setOnClickListener { takePhoto() }
         outputDirectory = getOutputDirectory()
@@ -115,23 +136,37 @@ class CameraActivity : BaseActivity() {
     private fun uploadImg(file: File) {
         showProgress()
         runBlocking {
-            val compressedImageFile = Compressor.compress(this@CameraActivity, file){
+            val compressedImageFile = Compressor.compress(this@CameraActivity, file) {
                 quality(30)
             }
-            HttpServerImpl.updateImg(compressedImageFile).subscribe(object : HttpResultSubscriber<String>() {
-                override fun onSuccess(t: String?) {
-                    stopProgress()
-                    val bundle = Bundle()
-                    bundle.putInt("type", type)
-                    bundle.putString("image", t)
-                    gotoActivity(CarenaResultActivity::class.java, bundle, true)
-                }
+            HttpServerImpl.updateImg(compressedImageFile)
+                .subscribe(object : HttpResultSubscriber<String>() {
+                    override fun onSuccess(t: String?) {
+                        stopProgress()
+                        val bundle = Bundle()
+                        bundle.putInt("type", type)
+                        bundle.putString("image", t)
+                        gotoActivity(CarenaResultActivity::class.java, bundle, true)
+                    }
 
-                override fun onFiled(message: String?) {
-                    stopProgress()
-                    showToast(message)
-                }
-            })
+                    override fun onFiled(message: String?) {
+                        stopProgress()
+                        showToast(message)
+                    }
+                })
+        }
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == 0x11 && resultCode == RESULT_OK) {
+            val uris = Matisse.obtainResult(data)
+            if (uris.size < 1) {
+                return
+            }
+            val fileUrl = File(UriUtils.getFilePathFromURI(this, uris[0]))
+            uploadImg(fileUrl)
         }
     }
 

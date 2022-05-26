@@ -13,7 +13,6 @@ import com.hlbw.car_system.base.BaseFragment
 import com.hlbw.car_system.base.MyApplication
 import com.hlbw.car_system.ui.CameraActivity
 import com.hlbw.car_system.ui.LoginActivity
-import com.hlbw.car_system.utils.SystemTTS
 import com.hlbw.car_system.utils.TextViewUtils
 
 /**
@@ -63,6 +62,17 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
         }
         rootView?.findViewById<View>(R.id.car_person_msg)?.setOnClickListener(this)
         rootView?.findViewById<View>(R.id.zhengchezhao)?.setOnClickListener(this)
+        rootView?.findViewById<View>(R.id.dajiahaozhao)?.setOnClickListener(this)
+        rootView?.findViewById<View>(R.id.chaijiezhao)?.setOnClickListener(this)
+        rootView?.findViewById<View>(R.id.qiegedajiaohaozhao)?.setOnClickListener {
+            showToast("敬请期待！")
+        }
+        rootView?.findViewById<View>(R.id.dianchizhengming)?.setOnClickListener {
+            showToast("敬请期待！")
+        }
+        rootView?.findViewById<View>(R.id.zhuxiaozhengming)?.setOnClickListener {
+            showToast("敬请期待！")
+        }
     }
 
 
@@ -75,6 +85,10 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
         view.findViewById<View>(R.id.close).setOnClickListener {
             dialog.dismiss()
         }
+        view.findViewById<View>(R.id.dengjizheng).setOnClickListener(this)
+        view.findViewById<View>(R.id.xingshizheng).setOnClickListener(this)
+        view.findViewById<View>(R.id.xinxidan).setOnClickListener(this)
+        view.findViewById<View>(R.id.chayanpinzheng).setOnClickListener(this)
         dialog.show()
         val manager: WindowManager = requireActivity().windowManager
         val display = manager.defaultDisplay
@@ -91,6 +105,10 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
         }
         var type = 0
         when (p0.id) {
+            R.id.dengjizheng -> type = 1
+            R.id.xingshizheng -> type = 2
+            R.id.xinxidan -> type = 3
+            R.id.chayanpinzheng -> type = 4
             R.id.car_person_msg -> type = 5
             R.id.zhengchezhao -> type = 6
             R.id.dajiahaozhao -> type = 7

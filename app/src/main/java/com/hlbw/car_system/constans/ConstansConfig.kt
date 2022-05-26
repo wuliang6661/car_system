@@ -71,19 +71,6 @@ class ConstansConfig {
         bean3.childSettings?.add(SettingChildBean("登记住所", 0, true, 0))
         bean3.childSettings?.add(SettingChildBean("登记日期", 0, true, 0))
         list.add(bean3)
-        val bean4 = SettingParentBean()
-        bean4.settingName = "专网识别播报项设置"
-        bean4.childSettings?.add(SettingChildBean("号牌号码", 0, true, 0))
-        bean4.childSettings?.add(SettingChildBean("住所地址", 0, true, 0))
-        bean4.childSettings?.add(SettingChildBean("中文品牌", 0, true, 0))
-        bean4.childSettings?.add(SettingChildBean("型号", 0, true, 0))
-        bean4.childSettings?.add(SettingChildBean("车辆识别代码", 0, true, 0))
-        bean4.childSettings?.add(SettingChildBean("发动机号", 0, true, 0))
-        bean4.childSettings?.add(SettingChildBean("使用性质", 0, true, 0))
-        bean4.childSettings?.add(SettingChildBean("所有人", 0, true, 0))
-        bean4.childSettings?.add(SettingChildBean("初次登记日期", 0, true, 0))
-        bean4.childSettings?.add(SettingChildBean("荷载载客数", 0, true, 0))
-        list.add(bean4)
         return list
     }
 }

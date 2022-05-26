@@ -99,6 +99,7 @@
                         android:textSize="14sp" />
 
                     <Switch
+                        android:id="@+id/bobao_switch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true" />
@@ -223,6 +224,7 @@
                         android:textSize="14sp" />
 
                     <Switch
+                        android:id="@+id/xiangce_switch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:checked="true" />
