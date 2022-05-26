@@ -6,11 +6,14 @@ import android.speech.tts.UtteranceProgressListener;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.ToastUtils;
+
 import java.util.Locale;
 
 public class SystemTTS {
 
-    private static SystemTTS singleton;
+    private static  SystemTTS singleton;
     private Context mContext;
     //核心播放对象
     private TextToSpeech textToSpeech;
@@ -20,26 +23,24 @@ public class SystemTTS {
 
     private SystemTTS(Context context) {
         this.mContext = context.getApplicationContext();
-        textToSpeech = new TextToSpeech(mContext, new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int i) {
-                //textToSpeech的配置
-                init(i);
-                isFirstPlay = false;
-            }
+        textToSpeech = new TextToSpeech(mContext, i -> {
+            LogUtils.d("开始初始化语音播放控件");
+            //textToSpeech的配置
+            init(i);
+            isFirstPlay = false;
         });
     }
 
 
     public static SystemTTS getInstance(Context context) {
-//        if (singleton == null) {
-//            synchronized (SystemTTS.class) {
-//                if (singleton == null) {
-//                    singleton = new SystemTTS(context);
-//                }
-//            }
-//        }
-        return singleton = new SystemTTS(context);
+        if (singleton == null) {
+            synchronized (SystemTTS.class) {
+                if (singleton == null) {
+                    singleton = new SystemTTS(context);
+                }
+            }
+        }
+        return singleton;
     }
 
     //textToSpeech的配置
@@ -54,6 +55,8 @@ public class SystemTTS {
                 textToSpeech.setPitch(1.0f);
                 textToSpeech.setSpeechRate(1.0f);
             }
+        }else{
+            LogUtils.e("初始化失败！");
         }
     }
 
