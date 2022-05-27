@@ -61,7 +61,7 @@
             android:layout_marginTop="45dp"
             android:layout_toRightOf="@id/person_img_layout"
             android:includeFontPadding="false"
-            android:text="TXJ2022"
+            android:text=""
             android:textColor="@color/white"
             android:textSize="18sp" />
 
@@ -75,7 +75,7 @@
             android:layout_marginTop="8dp"
             android:layout_toRightOf="@id/person_img_layout"
             android:includeFontPadding="false"
-            android:text="张关平"
+            android:text=""
             android:textColor="@color/white"
             android:textSize="14sp" />
 
@@ -87,7 +87,7 @@
             android:layout_below="@id/person_img_layout"
             android:layout_alignLeft="@id/person_img_layout"
             android:layout_marginTop="15dp"
-            android:text="德清泰鑫金属制品有限公司"
+            android:text=""
             android:textColor="@color/white"
             android:textSize="14sp" />
     </RelativeLayout>
@@ -103,11 +103,13 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/logout"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingLeft="15dp"
+            android:visibility="gone"
             android:paddingRight="15dp">
 
 
@@ -142,6 +144,7 @@
 
 
         <LinearLayout
+            android:id="@+id/clear_cache"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:gravity="center_vertical"
@@ -181,6 +184,7 @@
 
 
         <LinearLayout
+            android:id="@+id/check_update"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:gravity="center_vertical"

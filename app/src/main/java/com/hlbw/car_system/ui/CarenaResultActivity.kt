@@ -18,6 +18,8 @@ import com.hlbw.car_system.base.BaseActivity
 import com.hlbw.car_system.base.MyApplication
 import com.hlbw.car_system.bean.CarInfoBean
 import com.hlbw.car_system.bean.ItemVoListBean
+import com.hlbw.car_system.bean.SettingChildBean
+import com.hlbw.car_system.constans.ConstansConfig
 import com.hlbw.car_system.kotlin.gone
 import com.hlbw.car_system.kotlin.loadImageUrl
 import com.hlbw.car_system.kotlin.visible
@@ -80,7 +82,7 @@ class CarenaResultActivity : BaseActivity() {
             bundle.putInt("type", type)
             gotoActivity(CameraActivity::class.java, bundle, true)
         }
-        if (MyApplication.getSpUtils().getBoolean("isOpenBoBao",true)) {
+        if (MyApplication.getSpUtils().getBoolean("isOpenBoBao", true)) {
             findViewById<View>(R.id.bobao).visible()
         } else {
             findViewById<View>(R.id.bobao).gone()
@@ -88,13 +90,47 @@ class CarenaResultActivity : BaseActivity() {
         findViewById<View>(R.id.bobao).setOnClickListener {
             carInfo?.let { data ->
                 var bobaoText = ""
-                data.itemVoList.map {
-                    bobaoText += it.name
-                    bobaoText += it.value
+                if (type != 1 && type != 2 && type != 3 && type != 4) {
+                    data.itemVoList.map {
+                        bobaoText += it.name
+                        bobaoText += it.value
+                    }
+                    ttsVoice?.play(bobaoText)
+                    return@setOnClickListener
+                }
+                getChildSettingList().map { setting ->
+                    data.itemVoList.map {
+                        if (setting.id == it.id) {
+                            if (setting.isOpen) {
+                                bobaoText += it.name
+                                bobaoText += it.value
+                            }
+                        }
+                    }
                 }
                 ttsVoice?.play(bobaoText)
             }
         }
+    }
+
+
+    private fun getChildSettingList(): List<SettingChildBean> {
+        val list = ConstansConfig().getSettingData()
+        list.map {
+            if (it.settingName!! == "登记证书播报项设置" && type == 1) {
+                return it.childSettings!!
+            }
+            if (it.settingName!! == "行驶证播报项设置" && type == 2) {
+                return it.childSettings!!
+            }
+            if (it.settingName!! == "机动车信息单播报项设置" && type == 3) {
+                return it.childSettings!!
+            }
+            if (it.settingName!! == "机动车查验凭证播报项设置" && type == 4) {
+                return it.childSettings!!
+            }
+        }
+        return ArrayList()
     }
 
 

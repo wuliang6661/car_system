@@ -63,9 +63,10 @@
             android:paddingEnd="0dp"
             android:minHeight="2dp"
             android:maxHeight="2dp"
-            android:thumb="@drawable/seek_bar_thumb"
+            android:thumb="@mipmap/thump_img"
             android:thumbOffset="0dp"
-            android:progress="50"
+            android:progress="100"
+            android:max="200"
             android:progressDrawable="@drawable/seek_bar_bg"
             android:layout_marginRight="8dp" />
 

@@ -7,8 +7,11 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.blankj.utilcode.util.LogUtils;
-import com.blankj.utilcode.util.ToastUtils;
+import com.hlbw.car_system.bean.SettingChildBean;
+import com.hlbw.car_system.bean.SettingParentBean;
+import com.hlbw.car_system.constans.ConstansConfig;
 
+import java.util.List;
 import java.util.Locale;
 
 public class SystemTTS {
@@ -53,12 +56,34 @@ public class SystemTTS {
                 isSupport = false;
             } else {
                 textToSpeech.setPitch(1.0f);
-                textToSpeech.setSpeechRate(1.0f);
+                textToSpeech.setSpeechRate(getRate());
             }
         }else{
             LogUtils.e("初始化失败！");
         }
     }
+
+
+    /**
+     * 获取设置的播放速度
+     */
+    private float getRate(){
+        float rate = 1.0f;
+        List<SettingParentBean> list = new ConstansConfig().getSettingData();
+        for (SettingParentBean item : list){
+            if(item.getChildSettings() == null){
+                return 1.0f;
+            }
+            for (SettingChildBean childBean : item.getChildSettings()){
+                if(childBean.getType() == 1){
+                    rate = childBean.getOpenNum() == null? 0: childBean.getOpenNum() / 100;
+                    return rate;
+                }
+            }
+        }
+        return rate;
+    }
+
 
     public boolean play(String text) {
         boolean ret=false;

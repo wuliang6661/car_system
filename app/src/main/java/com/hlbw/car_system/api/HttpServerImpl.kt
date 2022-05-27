@@ -2,11 +2,13 @@ package com.hlbw.car_system.api
 
 import com.hlbw.car_system.api.rx.RxResultHelper
 import com.hlbw.car_system.bean.CarInfoBean
+import com.hlbw.car_system.bean.VersionBO
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import rx.Observable
 import java.io.File
+import com.hlbw.car_system.bean.UserBean as UserBean
 
 object HttpServerImpl {
     /**
@@ -48,6 +50,28 @@ object HttpServerImpl {
     fun saveVehicle(infoBean: CarInfoBean?): Observable<CarInfoBean> {
         return service!!.saveVehicle(infoBean).compose(RxResultHelper.httpRusult())
     }
+
+    /**
+     * 获取用户信息
+     */
+    fun getUserInfo(): Observable<UserBean> {
+        return service!!.appInfo.compose(RxResultHelper.httpRusult())
+    }
+
+    /**
+     * 退出登录
+     */
+    fun logout(): Observable<String> {
+        return service!!.logout().compose(RxResultHelper.httpRusult())
+    }
+
+    /**
+     * 检查更新
+     */
+    fun getVersionInfo(): Observable<VersionBO> {
+        return service!!.version.compose(RxResultHelper.httpRusult())
+    }
+
 
     /**
      * 上传文件

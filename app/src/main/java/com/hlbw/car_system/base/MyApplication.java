@@ -55,4 +55,8 @@ public class MyApplication extends Application {
     public static void saveToken(String token) {
         getSpUtils().put("token", token);
     }
+
+    public static void removeToken(){
+        getSpUtils().remove("token");
+    }
 }

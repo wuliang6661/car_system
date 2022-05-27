@@ -99,11 +99,39 @@ class ExpandAbleAdapter(context: Context?) : BaseExpandableListAdapter() {
         if (list[groupIndex].childSettings!![childIndex].type == 0){
             viewHolder?.checkLayout?.visibility = View.VISIBLE
             viewHolder?.processLayout?.visibility = View.GONE
-            viewHolder?.childText?.text = list[groupIndex].childSettings!![childIndex].title
+            list[groupIndex].childSettings?.let {
+                viewHolder?.childText?.text = it[childIndex].title
+                viewHolder?.checkBox?.isChecked = it[childIndex].isOpen
+                viewHolder?.checkBox?.tag = childIndex
+                viewHolder?.checkBox?.setOnCheckedChangeListener { checkBox, isChecked ->
+                    LogUtils.e("groupIndex ==  $groupIndex childIndex == $childIndex  checkBox.tag == ${checkBox.tag}")
+                    it[checkBox.tag as Int].isOpen = isChecked
+                    ConstansConfig().saveSettingData(list)
+                }
+            }
         }else{
             viewHolder?.checkLayout?.visibility = View.GONE
             viewHolder?.processLayout?.visibility = View.VISIBLE
-            viewHolder?.seekBar?.progress = list[groupIndex].childSettings!![childIndex].openNum!!
+            list[groupIndex].childSettings?.let {
+                viewHolder?.seekBar?.progress = it[childIndex].openNum!!.toInt()
+                viewHolder?.seekBar?.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+                    override fun onProgressChanged(
+                        seekBar: SeekBar?,
+                        progress: Int,
+                        fromUser: Boolean
+                    ) {
+                    }
+
+                    override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                    }
+
+                    override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                        LogUtils.e(seekBar?.progress)
+                        it[childIndex].openNum = seekBar?.progress?.toFloat()
+                        ConstansConfig().saveSettingData(list)
+                    }
+                })
+            }
         }
         return view
     }

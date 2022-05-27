@@ -28,49 +28,63 @@ class ConstansConfig {
     }
 
 
+    fun saveSettingData(data : List<SettingParentBean>){
+        val json = Gson().toJson(data)
+        MyApplication.getSpUtils().put("setting", json)
+    }
+
+
     private fun getInitData(): List<SettingParentBean> {
         val list: MutableList<SettingParentBean> = ArrayList()
         val bean = SettingParentBean()
         bean.settingName = "播报语速设置"
-        bean.childSettings?.add(SettingChildBean("播报语速设置", 1, true, 50))
+        bean.childSettings?.add(SettingChildBean(0,"播报语速设置", 1, true, 100f))
         list.add(bean)
         val bean1 = SettingParentBean()
-        bean1.settingName = "行驶证播报项设置"
-        bean1.childSettings?.add(SettingChildBean("号码号牌", 0, true, 0))
-        bean1.childSettings?.add(SettingChildBean("车辆类型", 0, true, 0))
-        bean1.childSettings?.add(SettingChildBean("所有人", 0, true, 0))
-        bean1.childSettings?.add(SettingChildBean("住址", 0, true, 0))
-        bean1.childSettings?.add(SettingChildBean("使用性质", 0, true, 0))
-        bean1.childSettings?.add(SettingChildBean("品牌型号", 0, true, 0))
-        bean1.childSettings?.add(SettingChildBean("车辆识别代码", 0, true, 0))
-        bean1.childSettings?.add(SettingChildBean("发动机号码", 0, true, 0))
-        bean1.childSettings?.add(SettingChildBean("注册日期", 0, true, 0))
+        bean1.settingName = "登记证书播报项设置"
+        bean1.childSettings?.add(SettingChildBean(1,"机动车所有人", 0, true, 0f))
+        bean1.childSettings?.add(SettingChildBean(2,"号牌号码", 0, true, 0f))
+        bean1.childSettings?.add(SettingChildBean(3,"所有人证件号码", 0, true, 0f))
+        bean1.childSettings?.add(SettingChildBean(4,"车辆类型", 0, true, 0f))
+        bean1.childSettings?.add(SettingChildBean(5,"车辆型号", 0, true, 0f))
+        bean1.childSettings?.add(SettingChildBean(6,"车架号", 0, true, 0f))
+        bean1.childSettings?.add(SettingChildBean(7,"发动机号", 0, true, 0f))
+        bean1.childSettings?.add(SettingChildBean(8,"使用类型", 0, true, 0f))
+        bean1.childSettings?.add(SettingChildBean(9,"注册日期", 0, true, 0f))
         list.add(bean1)
         val bean2 = SettingParentBean()
-        bean2.settingName = "登记证书播报项设置"
-        bean2.childSettings?.add(SettingChildBean("机动车所有人", 0, true, 0))
-        bean2.childSettings?.add(SettingChildBean("号码号牌", 0, true, 0))
-        bean2.childSettings?.add(SettingChildBean("所有人证件号码", 0, true, 0))
-        bean2.childSettings?.add(SettingChildBean("车辆类型", 0, true, 0))
-        bean2.childSettings?.add(SettingChildBean("车辆型号", 0, true, 0))
-        bean2.childSettings?.add(SettingChildBean("车架号", 0, true, 0))
-        bean2.childSettings?.add(SettingChildBean("发动机号", 0, true, 0))
-        bean2.childSettings?.add(SettingChildBean("使用性质", 0, true, 0))
-        bean2.childSettings?.add(SettingChildBean("注册日期", 0, true, 0))
+        bean2.settingName = "机动车信息单播报项设置"
+        bean2.childSettings?.add(SettingChildBean(1,"品牌号码", 0, true, 0f))
+        bean2.childSettings?.add(SettingChildBean(2,"品牌", 0, true, 0f))
+        bean2.childSettings?.add(SettingChildBean(3,"型号", 0, true, 0f))
+        bean2.childSettings?.add(SettingChildBean(4,"车辆类型", 0, true, 0f))
+        bean2.childSettings?.add(SettingChildBean(5,"车辆识别代码", 0, true, 0f))
+        bean2.childSettings?.add(SettingChildBean(6,"发动机号", 0, true, 0f))
+        bean2.childSettings?.add(SettingChildBean(7,"使用性质", 0, true, 0f))
+        bean2.childSettings?.add(SettingChildBean(8,"所有人", 0, true, 0f))
+        bean2.childSettings?.add(SettingChildBean(9,"登记住所", 0, true, 0f))
+        bean2.childSettings?.add(SettingChildBean(10,"登记日期", 0, true, 0f))
         list.add(bean2)
         val bean3 = SettingParentBean()
-        bean3.settingName = "非盗抢证明播报项设置"
-        bean3.childSettings?.add(SettingChildBean("品牌号码", 0, true, 0))
-        bean3.childSettings?.add(SettingChildBean("品牌", 0, true, 0))
-        bean3.childSettings?.add(SettingChildBean("型号", 0, true, 0))
-        bean3.childSettings?.add(SettingChildBean("车辆类型", 0, true, 0))
-        bean3.childSettings?.add(SettingChildBean("车辆识别代码", 0, true, 0))
-        bean3.childSettings?.add(SettingChildBean("发动机号", 0, true, 0))
-        bean3.childSettings?.add(SettingChildBean("使用性质", 0, true, 0))
-        bean3.childSettings?.add(SettingChildBean("所有人", 0, true, 0))
-        bean3.childSettings?.add(SettingChildBean("登记住所", 0, true, 0))
-        bean3.childSettings?.add(SettingChildBean("登记日期", 0, true, 0))
+        bean3.settingName = "行驶证播报项设置"
+        bean3.childSettings?.add(SettingChildBean(1,"号牌号码", 0, true, 0f))
+        bean3.childSettings?.add(SettingChildBean(2,"车辆类型", 0, true, 0f))
+        bean3.childSettings?.add(SettingChildBean(3,"所有人", 0, true, 0f))
+        bean3.childSettings?.add(SettingChildBean(4,"住址", 0, true, 0f))
+        bean3.childSettings?.add(SettingChildBean(5,"使用性质", 0, true, 0f))
+        bean3.childSettings?.add(SettingChildBean(7,"品牌型号", 0, true, 0f))
+        bean3.childSettings?.add(SettingChildBean(8,"车辆识别代码", 0, true, 0f))
+        bean3.childSettings?.add(SettingChildBean(9,"发动机号码", 0, true, 0f))
+        bean3.childSettings?.add(SettingChildBean(10,"注册日期", 0, true, 0f))
         list.add(bean3)
+        val bean4 = SettingParentBean()
+        bean4.settingName = "机动车查验凭证播报项设置"
+        bean4.childSettings?.add(SettingChildBean(1,"所有人", 0, true, 0f))
+        bean4.childSettings?.add(SettingChildBean(2,"型号", 0, true, 0f))
+        bean4.childSettings?.add(SettingChildBean(3,"车架号", 0, true, 0f))
+        bean4.childSettings?.add(SettingChildBean(4,"车辆类型", 0, true, 0f))
+        bean4.childSettings?.add(SettingChildBean(5,"号牌号码", 0, true, 0f))
+        list.add(bean4)
         return list
     }
 }

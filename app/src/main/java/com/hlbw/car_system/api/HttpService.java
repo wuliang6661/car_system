@@ -2,11 +2,14 @@ package com.hlbw.car_system.api;
 
 import com.hlbw.car_system.bean.BaseResult;
 import com.hlbw.car_system.bean.CarInfoBean;
+import com.hlbw.car_system.bean.UserBean;
+import com.hlbw.car_system.bean.VersionBO;
 
 import java.util.Map;
 
 import okhttp3.MultipartBody;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -43,6 +46,26 @@ public interface HttpService {
      */
     @POST("appApi/saveVehicle")
     Observable<BaseResult<CarInfoBean>> saveVehicle(@Body CarInfoBean bean);
+
+
+    /**
+     * 获取用户信息
+     */
+    @GET("getAppInfo")
+    Observable<BaseResult<UserBean>> getAppInfo();
+
+
+    /**
+     * 退出登录
+     */
+    @POST("logout")
+    Observable<BaseResult<String>> logout();
+
+    /**
+     * 检查更新
+     */
+    @GET("appApi/list")
+    Observable<BaseResult<VersionBO>> getVersion();
 
 
     /**
