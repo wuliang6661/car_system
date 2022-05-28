@@ -101,6 +101,7 @@ class ExpandAbleAdapter(context: Context?) : BaseExpandableListAdapter() {
             viewHolder?.processLayout?.visibility = View.GONE
             list[groupIndex].childSettings?.let {
                 viewHolder?.childText?.text = it[childIndex].title
+                viewHolder?.checkBox?.setOnCheckedChangeListener(null)
                 viewHolder?.checkBox?.isChecked = it[childIndex].isOpen
                 viewHolder?.checkBox?.tag = childIndex
                 viewHolder?.checkBox?.setOnCheckedChangeListener { checkBox, isChecked ->

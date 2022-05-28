@@ -49,7 +49,9 @@ class CarenaResultActivity : BaseActivity() {
     private var imageUrl: String = ""
     private var type: Int = 0
     private var carInfo: CarInfoBean? = null
-    private var ttsVoice: SystemTTS? = null
+    private val ttsVoice: SystemTTS by lazy {
+        SystemTTS.getInstance(this)
+    }
 
     override fun getLayout(): Int {
         return R.layout.act_carema_result
@@ -58,7 +60,7 @@ class CarenaResultActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        ttsVoice = SystemTTS.getInstance(this)
+        ttsVoice.play("")
         recycleView.let {
             it.layoutManager = LinearLayoutManager(this)
             it.isNestedScrollingEnabled = false
@@ -95,7 +97,7 @@ class CarenaResultActivity : BaseActivity() {
                         bobaoText += it.name
                         bobaoText += it.value
                     }
-                    ttsVoice?.play(bobaoText)
+                    ttsVoice.play(bobaoText)
                     return@setOnClickListener
                 }
                 getChildSettingList().map { setting ->
@@ -108,7 +110,7 @@ class CarenaResultActivity : BaseActivity() {
                         }
                     }
                 }
-                ttsVoice?.play(bobaoText)
+                ttsVoice.play(bobaoText)
             }
         }
     }
@@ -199,6 +201,9 @@ class CarenaResultActivity : BaseActivity() {
         val title = view.findViewById<TextView>(R.id.title)
         title.text = "请输入正确的${carInfo?.itemVoList?.get(position)?.name}"
         val editText = view.findViewById<EditText>(R.id.edit_text)
+        carInfo?.itemVoList?.get(position)?.let {
+            editText.setText(it.value)
+        }
         view.findViewById<View>(R.id.commit).setOnClickListener {
             val text = editText.text.toString()
             if (text.isEmpty()) {
@@ -265,6 +270,6 @@ class CarenaResultActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        ttsVoice?.destroy()
+        ttsVoice.destroy()
     }
 }

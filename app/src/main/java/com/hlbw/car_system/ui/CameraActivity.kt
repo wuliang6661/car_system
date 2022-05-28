@@ -9,6 +9,7 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
+import com.blankj.utilcode.util.FileUtils
 import com.hlbw.car_system.R
 import com.hlbw.car_system.api.HttpResultSubscriber
 import com.hlbw.car_system.api.HttpServerImpl
@@ -16,6 +17,7 @@ import com.hlbw.car_system.base.BaseActivity
 import com.hlbw.car_system.base.MyApplication
 import com.hlbw.car_system.kotlin.gone
 import com.hlbw.car_system.kotlin.visible
+import com.hlbw.car_system.utils.SaveImageUtils
 import com.hlbw.car_system.utils.UriUtils
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
@@ -62,7 +64,7 @@ class CameraActivity : BaseActivity() {
         findViewById<View>(R.id.back).setOnClickListener {
             finish()
         }
-        if (MyApplication.getSpUtils().getBoolean("isOpenXiangCe",true)) {
+        if (MyApplication.getSpUtils().getBoolean("isOpenXiangCe", true)) {
             findViewById<View>(R.id.go_xiangce).visible()
         } else {
             findViewById<View>(R.id.go_xiangce).gone()
@@ -126,14 +128,14 @@ class CameraActivity : BaseActivity() {
                 override fun onImageSaved(output: ImageCapture.OutputFileResults) {
                     val savedUri = Uri.fromFile(photoFile)
                     val msg = "Photo capture succeeded: $savedUri"
-                    uploadImg(photoFile)
+                    uploadImg(photoFile, false)
                     Log.d(TAG, msg)
                 }
             })
     }
 
 
-    private fun uploadImg(file: File) {
+    private fun uploadImg(file: File, isOpenXC: Boolean) {
         showProgress()
         runBlocking {
             val compressedImageFile = Compressor.compress(this@CameraActivity, file) {
@@ -143,6 +145,14 @@ class CameraActivity : BaseActivity() {
                 .subscribe(object : HttpResultSubscriber<String>() {
                     override fun onSuccess(t: String?) {
                         stopProgress()
+                        if (MyApplication.getSpUtils()
+                                .getBoolean("isAddXiangCe", true) && !isOpenXC
+                        ) {
+                            //保存到相册
+                            SaveImageUtils.saveFileToGallery(this@CameraActivity, file)
+                        } else {
+                            FileUtils.delete(file)
+                        }
                         val bundle = Bundle()
                         bundle.putInt("type", type)
                         bundle.putString("image", t)
@@ -150,6 +160,7 @@ class CameraActivity : BaseActivity() {
                     }
 
                     override fun onFiled(message: String?) {
+                        FileUtils.delete(file)
                         stopProgress()
                         showToast(message)
                     }
@@ -166,7 +177,7 @@ class CameraActivity : BaseActivity() {
                 return
             }
             val fileUrl = File(UriUtils.getFilePathFromURI(this, uris[0]))
-            uploadImg(fileUrl)
+            uploadImg(fileUrl, true)
         }
     }
 

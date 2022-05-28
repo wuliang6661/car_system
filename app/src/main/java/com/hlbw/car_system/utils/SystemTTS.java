@@ -16,7 +16,7 @@ import java.util.Locale;
 
 public class SystemTTS {
 
-    private static  SystemTTS singleton;
+    private static SystemTTS singleton;
     private Context mContext;
     //核心播放对象
     private TextToSpeech textToSpeech;
@@ -58,7 +58,7 @@ public class SystemTTS {
                 textToSpeech.setPitch(1.0f);
                 textToSpeech.setSpeechRate(getRate());
             }
-        }else{
+        } else {
             LogUtils.e("初始化失败！");
         }
     }
@@ -67,16 +67,16 @@ public class SystemTTS {
     /**
      * 获取设置的播放速度
      */
-    private float getRate(){
+    private float getRate() {
         float rate = 1.0f;
         List<SettingParentBean> list = new ConstansConfig().getSettingData();
-        for (SettingParentBean item : list){
-            if(item.getChildSettings() == null){
+        for (SettingParentBean item : list) {
+            if (item.getChildSettings() == null) {
                 return 1.0f;
             }
-            for (SettingChildBean childBean : item.getChildSettings()){
-                if(childBean.getType() == 1){
-                    rate = childBean.getOpenNum() == null? 0: childBean.getOpenNum() / 100;
+            for (SettingChildBean childBean : item.getChildSettings()) {
+                if (childBean.getType() == 1) {
+                    rate = childBean.getOpenNum() == null ? 0 : childBean.getOpenNum() / 100;
                     return rate;
                 }
             }
@@ -86,27 +86,27 @@ public class SystemTTS {
 
 
     public boolean play(String text) {
-        boolean ret=false;
+        boolean ret = false;
         if (!isSupport) {
             Toast.makeText(mContext, "TTS不支持", Toast.LENGTH_SHORT).show();
-            ret=true;
+            ret = true;
         }
         if (textToSpeech != null) {
-            if(!isFirstPlay){
+            if (!isFirstPlay) {
                 speak(text);
                 isFirstPlay = true;
-                ret=true;
-            }else{
-                if(!textToSpeech.isSpeaking()){
+                ret = true;
+            } else {
+                if (!textToSpeech.isSpeaking()) {
                     speak(text);
-                    ret=true;
+                    ret = true;
                 }
             }
         }
-        return  ret;
+        return ret;
     }
 
-    private void speak(String text){
+    private void speak(String text) {
         textToSpeech.speak(text, TextToSpeech.QUEUE_ADD, null, null);
         textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
             @Override
@@ -140,6 +140,7 @@ public class SystemTTS {
         stop();
         if (textToSpeech != null) {
             textToSpeech.shutdown();
+            singleton = null;
         }
     }
 }
