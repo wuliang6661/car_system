@@ -1,5 +1,6 @@
 package com.hlbw.car_system.ui
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +25,7 @@ import com.hlbw.car_system.kotlin.gone
 import com.hlbw.car_system.kotlin.loadImageUrl
 import com.hlbw.car_system.kotlin.visible
 import com.hlbw.car_system.utils.AppManager
+import com.hlbw.car_system.utils.MyToastUtils
 import com.hlbw.car_system.utils.SystemTTS
 import com.hlbw.car_system.weight.lgrecycleadapter.LGRecycleViewAdapter
 import com.hlbw.car_system.weight.lgrecycleadapter.LGViewHolder
@@ -46,7 +48,16 @@ class CarenaResultActivity : BaseActivity() {
         findViewById(R.id.title)
     }
 
+    private val btAddImg: TextView by lazy {
+        findViewById(R.id.bt_add_img)
+    }
+
+    private val dajiahaoImg: ImageView by lazy {
+        findViewById(R.id.dajiahao_img)
+    }
+
     private var imageUrl: String = ""
+    private var imageDajiahao1: String = ""
     private var type: Int = 0
     private var carInfo: CarInfoBean? = null
     private val ttsVoice: SystemTTS by lazy {
@@ -90,6 +101,11 @@ class CarenaResultActivity : BaseActivity() {
             findViewById<View>(R.id.bobao).gone()
         }
         findViewById<View>(R.id.bobao).setOnClickListener {
+            if (ttsVoice.TTsIsSpeeking()) {   //是否正在播放
+                MyToastUtils.showToast("暂停播报")
+                ttsVoice.stop()
+                return@setOnClickListener
+            }
             carInfo?.let { data ->
                 var bobaoText = ""
                 if (type != 1 && type != 2 && type != 3 && type != 4) {
@@ -98,6 +114,7 @@ class CarenaResultActivity : BaseActivity() {
                         bobaoText += it.value
                     }
                     ttsVoice.play(bobaoText)
+                    MyToastUtils.showToast("开始播报")
                     return@setOnClickListener
                 }
                 getChildSettingList().map { setting ->
@@ -111,6 +128,7 @@ class CarenaResultActivity : BaseActivity() {
                     }
                 }
                 ttsVoice.play(bobaoText)
+                MyToastUtils.showToast("开始播报")
             }
         }
     }
@@ -160,6 +178,7 @@ class CarenaResultActivity : BaseActivity() {
     private fun saveMsg() {
         carInfo?.images = imageUrl
         carInfo?.type = type
+        carInfo?.images1 = imageDajiahao1
         showProgress()
         HttpServerImpl.saveVehicle(carInfo).subscribe(object : HttpResultSubscriber<CarInfoBean>() {
 
@@ -183,6 +202,34 @@ class CarenaResultActivity : BaseActivity() {
             showEditDialog(position)
         }
         recycleView.adapter = adapter
+        if (type == 6) {
+            btAddImg.visible()
+        }else{
+            btAddImg.gone()
+            dajiahaoImg.gone()
+        }
+        btAddImg.setOnClickListener {
+            val intent = Intent(this,CameraActivity::class.java)
+            val bundle = Bundle()
+            bundle.putInt("type", -1)
+            intent.putExtras(bundle)
+            startActivityForResult(intent,0x11)
+        }
+    }
+
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (data == null){
+            return
+        }
+        when(requestCode){
+            0x11->{
+                imageDajiahao1 = data.getStringExtra("image").toString()
+                dajiahaoImg.gone()
+                dajiahaoImg.loadImageUrl(imageDajiahao1)
+            }
+        }
     }
 
 
@@ -191,8 +238,7 @@ class CarenaResultActivity : BaseActivity() {
      */
     private fun showEditDialog(position: Int) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this, R.style.dialogNoBg)
-        val view: View =
-            LayoutInflater.from(this).inflate(R.layout.dialog_edit_item, null)
+        val view: View = LayoutInflater.from(this).inflate(R.layout.dialog_edit_item, null)
         builder.setView(view)
         val dialog: AlertDialog = builder.create()
         view.findViewById<View>(R.id.close).setOnClickListener {
@@ -228,8 +274,7 @@ class CarenaResultActivity : BaseActivity() {
      */
     private fun showReDialog(position: Int, text: String) {
         val builder: AlertDialog.Builder = AlertDialog.Builder(this, R.style.dialogNoBg)
-        val view: View =
-            LayoutInflater.from(this).inflate(R.layout.dialog_re_queren, null)
+        val view: View = LayoutInflater.from(this).inflate(R.layout.dialog_re_queren, null)
         builder.setView(view)
         val dialog: AlertDialog = builder.create()
         view.findViewById<View>(R.id.close).setOnClickListener {
@@ -254,10 +299,8 @@ class CarenaResultActivity : BaseActivity() {
     }
 
 
-    class ItemAdapter(dataList: MutableList<ItemVoListBean>?) :
-        LGRecycleViewAdapter<ItemVoListBean>(
-            dataList
-        ) {
+    class ItemAdapter(dataList: MutableList<ItemVoListBean>?) : LGRecycleViewAdapter<ItemVoListBean>(
+        dataList) {
 
         override fun getLayoutId(viewType: Int): Int {
             return R.layout.item_result

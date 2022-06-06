@@ -187,6 +187,34 @@
 
 
             </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/bt_add_img"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/shape_slide_1da3db_conner_10"
+                android:gravity="center"
+                android:padding="12dp"
+                android:text="上传大架号照"
+                android:textColor="@color/white"
+                android:textSize="15sp"
+                android:visibility="gone" />
+
+
+            <com.makeramen.roundedimageview.RoundedImageView
+                android:id="@+id/dajiahao_img"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"
+                android:layout_margin="15dp"
+                android:background="@drawable/shape_slide_ffffff_conner_10"
+                android:visibility="gone"
+                app:riv_corner_radius="10dp" />
+
+
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 </RelativeLayout>

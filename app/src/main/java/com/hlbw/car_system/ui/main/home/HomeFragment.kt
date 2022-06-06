@@ -27,11 +27,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
     var rootView: View? = null
     var carMsg: View? = null
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         rootView = inflater.inflate(R.layout.fra_home, container, false)
         return rootView
     }
@@ -48,11 +44,9 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
     private fun initView() {
         tvHint = rootView?.findViewById(R.id.tv_hint)
         carMsg = rootView?.findViewById(R.id.car_msg)
-        TextViewUtils.stringInterceptionChangeRed(
-            tvHint,
-            "仅用于匹配车辆信息条目，无需完全纠正，",
-            "整车照、大架号、拆解照、切割大架照种的识别结果仅用于匹配车辆信息条目，无需完全纠正，只要能匹配正确条目即可"
-        )
+        TextViewUtils.stringInterceptionChangeRed(tvHint,
+                                                  "仅用于匹配车辆信息条目，无需完全纠正，",
+                                                  "整车照、大架号、拆解照、切割大架照种的识别结果仅用于匹配车辆信息条目，无需完全纠正，只要能匹配正确条目即可")
     }
 
 
@@ -64,6 +58,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
         rootView?.findViewById<View>(R.id.zhengchezhao)?.setOnClickListener(this)
         rootView?.findViewById<View>(R.id.dajiahaozhao)?.setOnClickListener(this)
         rootView?.findViewById<View>(R.id.chaijiezhao)?.setOnClickListener(this)
+        rootView?.findViewById<View>(R.id.yingyezhizhao)?.setOnClickListener(this)
         rootView?.findViewById<View>(R.id.qiegedajiaohaozhao)?.setOnClickListener {
             showToast("敬请期待！")
         }
@@ -113,6 +108,7 @@ class HomeFragment : BaseFragment(), View.OnClickListener {
             R.id.zhengchezhao -> type = 6
             R.id.dajiahaozhao -> type = 7
             R.id.chaijiezhao -> type = 8
+            R.id.yingyezhizhao -> type = 9
         }
         val bundle = Bundle()
         bundle.putInt("type", type)

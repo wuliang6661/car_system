@@ -23,7 +23,7 @@ import rx.Observable;
 
 public interface HttpService {
 
-    String BASE_URL = "http://47.114.136.191:8080/";
+    String BASE_URL = "http://taixin.happydoit.com/prod-api/";
 
     /**
      * 登录

@@ -70,13 +70,9 @@ class CameraActivity : BaseActivity() {
             findViewById<View>(R.id.go_xiangce).gone()
         }
         findViewById<View>(R.id.go_xiangce).setOnClickListener {
-            Matisse.from(this)
-                .choose(MimeType.of(MimeType.JPEG)) //ofImage()
-                .countable(false)
-                .maxSelectable(1)
-                .forResult(0x11)
-        }
-        // Request camera permissions
+            Matisse.from(this).choose(MimeType.of(MimeType.JPEG)) //ofImage()
+                .countable(false).maxSelectable(1).forResult(0x11)
+        } // Request camera permissions
         startCamera() // Setup the listener for take photo button
         takePhoto.setOnClickListener { takePhoto() }
         outputDirectory = getOutputDirectory()
@@ -101,37 +97,32 @@ class CameraActivity : BaseActivity() {
             } catch (exc: Exception) {
                 Log.e(TAG, "Use case binding failed", exc)
             }
-        }, ContextCompat.getMainExecutor(this))
+                                         }, ContextCompat.getMainExecutor(this))
     }
 
 
     private fun takePhoto() { // Get a stable reference of the modifiable image capture use case
         val imageCapture =
             imageCapture ?: return // Create timestamped output file to hold the image
-        val photoFile = File(
-            outputDirectory,
-            SimpleDateFormat(
-                FILENAME_FORMAT,
-                Locale.US
-            ).format(System.currentTimeMillis()) + ".jpg"
-        ) // Create output options object which contains file + metadata
+        val photoFile = File(outputDirectory,
+                             SimpleDateFormat(FILENAME_FORMAT,
+                                              Locale.US).format(System.currentTimeMillis()) + ".jpg") // Create output options object which contains file + metadata
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile)
-            .build() // Setup image capture listener which is triggered after photo has
-        // been taken
+            .build() // Setup image capture listener which is triggered after photo has // been taken
         imageCapture.takePicture(outputOptions,
-            ContextCompat.getMainExecutor(this),
-            object : ImageCapture.OnImageSavedCallback {
-                override fun onError(exc: ImageCaptureException) {
-                    Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
-                }
+                                 ContextCompat.getMainExecutor(this),
+                                 object : ImageCapture.OnImageSavedCallback {
+                                     override fun onError(exc: ImageCaptureException) {
+                                         Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
+                                     }
 
-                override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                    val savedUri = Uri.fromFile(photoFile)
-                    val msg = "Photo capture succeeded: $savedUri"
-                    uploadImg(photoFile, false)
-                    Log.d(TAG, msg)
-                }
-            })
+                                     override fun onImageSaved(output: ImageCapture.OutputFileResults) {
+                                         val savedUri = Uri.fromFile(photoFile)
+                                         val msg = "Photo capture succeeded: $savedUri"
+                                         uploadImg(photoFile, false)
+                                         Log.d(TAG, msg)
+                                     }
+                                 })
     }
 
 
@@ -146,17 +137,23 @@ class CameraActivity : BaseActivity() {
                     override fun onSuccess(t: String?) {
                         stopProgress()
                         if (MyApplication.getSpUtils()
-                                .getBoolean("isAddXiangCe", true) && !isOpenXC
-                        ) {
-                            //保存到相册
+                                .getBoolean("isAddXiangCe", true) && !isOpenXC) { //保存到相册
                             SaveImageUtils.saveFileToGallery(this@CameraActivity, file)
                         } else {
                             FileUtils.delete(file)
                         }
-                        val bundle = Bundle()
-                        bundle.putInt("type", type)
-                        bundle.putString("image", t)
-                        gotoActivity(CarenaResultActivity::class.java, bundle, true)
+
+                        if (type == -1) {
+                            val intent = Intent()
+                            intent.putExtra("image", t)
+                            setResult(0x11, intent)
+                            finish()
+                        } else {
+                            val bundle = Bundle()
+                            bundle.putInt("type", type)
+                            bundle.putString("image", t)
+                            gotoActivity(CarenaResultActivity::class.java, bundle, true)
+                        }
                     }
 
                     override fun onFiled(message: String?) {
