@@ -226,7 +226,7 @@ class CarenaResultActivity : BaseActivity() {
         when(requestCode){
             0x11->{
                 imageDajiahao1 = data.getStringExtra("image").toString()
-                dajiahaoImg.gone()
+                dajiahaoImg.visible()
                 dajiahaoImg.loadImageUrl(imageDajiahao1)
             }
         }
