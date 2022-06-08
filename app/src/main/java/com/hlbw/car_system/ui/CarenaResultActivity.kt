@@ -179,6 +179,14 @@ class CarenaResultActivity : BaseActivity() {
         carInfo?.images = imageUrl
         carInfo?.type = type
         carInfo?.images1 = imageDajiahao1
+        carInfo?.let { data ->
+            data.itemVoList?.map {
+                if (it.value.isNullOrEmpty()) {
+                    showToast("请输入${it.name}")
+                    return
+                }
+            }
+        }
         showProgress()
         HttpServerImpl.saveVehicle(carInfo).subscribe(object : HttpResultSubscriber<CarInfoBean>() {
 
@@ -204,27 +212,27 @@ class CarenaResultActivity : BaseActivity() {
         recycleView.adapter = adapter
         if (type == 6) {
             btAddImg.visible()
-        }else{
+        } else {
             btAddImg.gone()
             dajiahaoImg.gone()
         }
         btAddImg.setOnClickListener {
-            val intent = Intent(this,CameraActivity::class.java)
+            val intent = Intent(this, CameraActivity::class.java)
             val bundle = Bundle()
             bundle.putInt("type", -1)
             intent.putExtras(bundle)
-            startActivityForResult(intent,0x11)
+            startActivityForResult(intent, 0x11)
         }
     }
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (data == null){
+        if (data == null) {
             return
         }
-        when(requestCode){
-            0x11->{
+        when (requestCode) {
+            0x11 -> {
                 imageDajiahao1 = data.getStringExtra("image").toString()
                 dajiahaoImg.visible()
                 dajiahaoImg.loadImageUrl(imageDajiahao1)
@@ -307,7 +315,8 @@ class CarenaResultActivity : BaseActivity() {
         }
 
         override fun convert(holder: LGViewHolder?, t: ItemVoListBean?, position: Int) {
-            holder?.setText(R.id.name, "${t?.name} : ${t?.value}")
+            holder?.setText(R.id.name, "${t?.name} : ")
+            holder?.setText(R.id.value, "${t?.value}")
         }
     }
 
