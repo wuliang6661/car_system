@@ -50,7 +50,7 @@
         <!--拍照界面-->
         <activity
             android:name=".ui.CameraActivity"
-            android:screenOrientation="fullSensor" />
+            android:screenOrientation="portrait" />
 
 
         <!--分析界面-->
