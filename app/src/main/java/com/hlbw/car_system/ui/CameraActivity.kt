@@ -1,12 +1,14 @@
 package com.hlbw.car_system.ui
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.CameraView
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import com.blankj.utilcode.util.FileUtils
@@ -29,6 +31,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+import kotlin.math.abs
 
 
 class CameraActivity : BaseActivity() {
@@ -73,7 +76,9 @@ class CameraActivity : BaseActivity() {
             Matisse.from(this).choose(MimeType.of(MimeType.JPEG)) //ofImage()
                 .countable(false).maxSelectable(1).forResult(0x11)
         } // Request camera permissions
-        startCamera() // Setup the listener for take photo button
+        viewFinder.post {
+            startCamera() // Setup the listener for take photo button
+        }
         takePhoto.setOnClickListener { takePhoto() }
         outputDirectory = getOutputDirectory()
         cameraExecutor = Executors.newSingleThreadExecutor()
@@ -85,9 +90,10 @@ class CameraActivity : BaseActivity() {
         imageCapture = ImageCapture.Builder().build()
         cameraProviderFuture.addListener({ // Used to bind the lifecycle of cameras to the lifecycle owner
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get() // Preview
-            preview = Preview.Builder().build() //创建图片的 capture
-            imageCapture = ImageCapture.Builder().setFlashMode(ImageCapture.FLASH_MODE_AUTO)
-                .build() // Select back camera
+            preview = Preview.Builder().setTargetAspectRatio(getRatio())
+                .setTargetRotation(viewFinder.display.rotation).build() //创建图片的capture
+            imageCapture = ImageCapture.Builder()
+                .setTargetRotation(viewFinder.display.rotation).build() // Select back camera
             val cameraSelector =
                 CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK).build()
             try { // Unbind use cases before rebinding
@@ -185,6 +191,15 @@ class CameraActivity : BaseActivity() {
         }
         return if (mediaDir != null && mediaDir.exists()) mediaDir else filesDir
     }
+
+    private fun getRatio(): Int {
+        val screenRatio = viewFinder.height / (viewFinder.width * 1.0f);
+        if (abs(screenRatio - 4.0 / 3.0) <= abs(screenRatio - 16.0 / 9.0)) {
+            return AspectRatio.RATIO_4_3
+        }
+        return AspectRatio.RATIO_16_9
+    }
+
 
     companion object {
         private const val TAG = "CameraXBasic"
