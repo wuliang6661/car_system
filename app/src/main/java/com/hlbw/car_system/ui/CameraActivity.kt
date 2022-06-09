@@ -1,16 +1,9 @@
 package com.hlbw.car_system.ui
 
 import android.content.Intent
-import android.graphics.Bitmap
-import android.net.Uri
+import android.graphics.PointF
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import androidx.camera.core.*
-import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.CameraView
-import androidx.camera.view.PreviewView
-import androidx.core.content.ContextCompat
 import com.blankj.utilcode.util.FileUtils
 import com.hlbw.car_system.R
 import com.hlbw.car_system.api.HttpResultSubscriber
@@ -21,6 +14,7 @@ import com.hlbw.car_system.kotlin.gone
 import com.hlbw.car_system.kotlin.visible
 import com.hlbw.car_system.utils.SaveImageUtils
 import com.hlbw.car_system.utils.UriUtils
+import com.otaliastudios.cameraview.*
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
 import id.zelory.compressor.Compressor
@@ -31,15 +25,9 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import kotlin.math.abs
 
 
 class CameraActivity : BaseActivity() {
-
-
-    private var preview: Preview? = null
-    private var imageCapture: ImageCapture? = null
-    private var camera: Camera? = null
 
     private lateinit var outputDirectory: File
     private lateinit var cameraExecutor: ExecutorService
@@ -47,9 +35,8 @@ class CameraActivity : BaseActivity() {
     private val takePhoto: View by lazy {
         findViewById(R.id.take_photo)
     }
-    private val viewFinder: PreviewView by lazy {
-        findViewById(R.id.viewFinder)
-    }
+
+    private val camera: CameraView by lazy { findViewById(R.id.camera) }
 
     private var type: Int = 0
 
@@ -76,59 +63,36 @@ class CameraActivity : BaseActivity() {
             Matisse.from(this).choose(MimeType.of(MimeType.JPEG)) //ofImage()
                 .countable(false).maxSelectable(1).forResult(0x11)
         } // Request camera permissions
-        viewFinder.post {
-            startCamera() // Setup the listener for take photo button
-        }
-        takePhoto.setOnClickListener { takePhoto() }
+        CameraLogger.setLogLevel(CameraLogger.LEVEL_VERBOSE)
+        camera.setLifecycleOwner(this)
+        camera.addCameraListener(Listener())
+        takePhoto.setOnClickListener { camera.takePicture() }
         outputDirectory = getOutputDirectory()
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
+    private inner class Listener : CameraListener() {
+        override fun onCameraOpened(options: CameraOptions) {
+        }
 
-    private fun startCamera() {
-        val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
-        imageCapture = ImageCapture.Builder().build()
-        cameraProviderFuture.addListener({ // Used to bind the lifecycle of cameras to the lifecycle owner
-            val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get() // Preview
-            preview = Preview.Builder().setTargetAspectRatio(getRatio())
-                .setTargetRotation(viewFinder.display.rotation).build() //创建图片的capture
-            imageCapture = ImageCapture.Builder()
-                .setTargetRotation(viewFinder.display.rotation).build() // Select back camera
-            val cameraSelector =
-                CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_BACK).build()
-            try { // Unbind use cases before rebinding
-                cameraProvider.unbindAll() // Bind use cases to camera
-                camera = cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageCapture)
-                preview?.setSurfaceProvider(viewFinder.createSurfaceProvider(camera?.cameraInfo))
-            } catch (exc: Exception) {
-                Log.e(TAG, "Use case binding failed", exc)
+        override fun onPictureTaken(result: PictureResult) {
+            super.onPictureTaken(result)
+            val photoFile = File(outputDirectory,
+                                 SimpleDateFormat(FILENAME_FORMAT,
+                                                  Locale.US).format(System.currentTimeMillis()) + ".jpg")
+            result.toBitmap(camera.width, camera.height) { bitmap ->
+                SaveImageUtils.saveImageToFile(this@CameraActivity, photoFile, bitmap)
+                uploadImg(photoFile, false)
             }
-                                         }, ContextCompat.getMainExecutor(this))
-    }
+        }
 
+        override fun onExposureCorrectionChanged(newValue: Float, bounds: FloatArray, fingers: Array<PointF>?) {
+            super.onExposureCorrectionChanged(newValue, bounds, fingers)
+        }
 
-    private fun takePhoto() { // Get a stable reference of the modifiable image capture use case
-        val imageCapture =
-            imageCapture ?: return // Create timestamped output file to hold the image
-        val photoFile = File(outputDirectory,
-                             SimpleDateFormat(FILENAME_FORMAT,
-                                              Locale.US).format(System.currentTimeMillis()) + ".jpg") // Create output options object which contains file + metadata
-        val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile)
-            .build() // Setup image capture listener which is triggered after photo has // been taken
-        imageCapture.takePicture(outputOptions,
-                                 ContextCompat.getMainExecutor(this),
-                                 object : ImageCapture.OnImageSavedCallback {
-                                     override fun onError(exc: ImageCaptureException) {
-                                         Log.e(TAG, "Photo capture failed: ${exc.message}", exc)
-                                     }
-
-                                     override fun onImageSaved(output: ImageCapture.OutputFileResults) {
-                                         val savedUri = Uri.fromFile(photoFile)
-                                         val msg = "Photo capture succeeded: $savedUri"
-                                         uploadImg(photoFile, false)
-                                         Log.d(TAG, msg)
-                                     }
-                                 })
+        override fun onZoomChanged(newValue: Float, bounds: FloatArray, fingers: Array<PointF>?) {
+            super.onZoomChanged(newValue, bounds, fingers)
+        }
     }
 
 
@@ -136,7 +100,7 @@ class CameraActivity : BaseActivity() {
         showProgress()
         runBlocking {
             val compressedImageFile = Compressor.compress(this@CameraActivity, file) {
-                quality(30)
+                quality(50)
             }
             HttpServerImpl.updateImg(compressedImageFile)
                 .subscribe(object : HttpResultSubscriber<String>() {
@@ -190,14 +154,6 @@ class CameraActivity : BaseActivity() {
             File(it, resources.getString(R.string.app_name)).apply { mkdirs() }
         }
         return if (mediaDir != null && mediaDir.exists()) mediaDir else filesDir
-    }
-
-    private fun getRatio(): Int {
-        val screenRatio = viewFinder.height / (viewFinder.width * 1.0f);
-        if (abs(screenRatio - 4.0 / 3.0) <= abs(screenRatio - 16.0 / 9.0)) {
-            return AspectRatio.RATIO_4_3
-        }
-        return AspectRatio.RATIO_16_9
     }
 
 
