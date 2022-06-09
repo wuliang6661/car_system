@@ -5,6 +5,7 @@ import android.graphics.PointF
 import android.os.Bundle
 import android.view.View
 import com.blankj.utilcode.util.FileUtils
+import com.blankj.utilcode.util.ScreenUtils
 import com.hlbw.car_system.R
 import com.hlbw.car_system.api.HttpResultSubscriber
 import com.hlbw.car_system.api.HttpServerImpl
@@ -23,14 +24,11 @@ import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.Executors
 
 
 class CameraActivity : BaseActivity() {
 
     private lateinit var outputDirectory: File
-    private lateinit var cameraExecutor: ExecutorService
 
     private val takePhoto: View by lazy {
         findViewById(R.id.take_photo)
@@ -68,7 +66,6 @@ class CameraActivity : BaseActivity() {
         camera.addCameraListener(Listener())
         takePhoto.setOnClickListener { camera.takePicture() }
         outputDirectory = getOutputDirectory()
-        cameraExecutor = Executors.newSingleThreadExecutor()
     }
 
     private inner class Listener : CameraListener() {
@@ -80,7 +77,7 @@ class CameraActivity : BaseActivity() {
             val photoFile = File(outputDirectory,
                                  SimpleDateFormat(FILENAME_FORMAT,
                                                   Locale.US).format(System.currentTimeMillis()) + ".jpg")
-            result.toBitmap(camera.width, camera.height) { bitmap ->
+            result.toBitmap(ScreenUtils.getScreenWidth(), ScreenUtils.getScreenHeight()) { bitmap ->
                 SaveImageUtils.saveImageToFile(this@CameraActivity, photoFile, bitmap)
                 uploadImg(photoFile, false)
             }
