@@ -18,8 +18,6 @@ import com.hlbw.car_system.utils.UriUtils
 import com.otaliastudios.cameraview.*
 import com.zhihu.matisse.Matisse
 import com.zhihu.matisse.MimeType
-import id.zelory.compressor.Compressor
-import id.zelory.compressor.constraint.quality
 import kotlinx.coroutines.runBlocking
 import java.io.File
 import java.text.SimpleDateFormat
@@ -96,10 +94,10 @@ class CameraActivity : BaseActivity() {
     private fun uploadImg(file: File, isOpenXC: Boolean) {
         showProgress()
         runBlocking {
-            val compressedImageFile = Compressor.compress(this@CameraActivity, file) {
-                quality(50)
-            }
-            HttpServerImpl.updateImg(compressedImageFile)
+//            val compressedImageFile = Compressor.compress(this@CameraActivity, file) {
+//                quality(50)
+//            }
+            HttpServerImpl.updateImg(file)
                 .subscribe(object : HttpResultSubscriber<String>() {
                     override fun onSuccess(t: String?) {
                         stopProgress()
