@@ -87,6 +87,7 @@ public class SystemTTS {
 
     public boolean play(String text) {
         boolean ret = false;
+        text = syncNum(text);
         if (!isSupport) {
             Toast.makeText(mContext, "TTS不支持", Toast.LENGTH_SHORT).show();
             ret = true;
@@ -105,6 +106,29 @@ public class SystemTTS {
         }
         return ret;
     }
+
+
+    private String syncNum(String text) {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < text.length(); i++) {
+            String str = isNumber(String.valueOf(text.charAt(i))) ? text.charAt(i) + " " : String.valueOf(text.charAt(i));
+            builder.append(str);
+        }
+        return builder.toString();
+    }
+
+
+    private boolean isNumber(String word) {
+        boolean isNumber;
+        try {
+            Integer.parseInt(word);
+            isNumber = true;
+        } catch (NumberFormatException e) {
+            isNumber = false;
+        }
+        return isNumber;
+    }
+
 
     private void speak(String text) {
         textToSpeech.speak(text, TextToSpeech.QUEUE_ADD, null, null);
