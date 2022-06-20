@@ -111,7 +111,7 @@ class CarenaResultActivity : BaseActivity() {
                 if (type != 1 && type != 2 && type != 3 && type != 4) {
                     data.itemVoList.map {
                         bobaoText += it.name
-                        bobaoText += it.value
+                        bobaoText += getCarNum(it.name, it.value)
                     }
                     ttsVoice.play(bobaoText)
                     MyToastUtils.showToast("开始播报")
@@ -122,7 +122,7 @@ class CarenaResultActivity : BaseActivity() {
                         if (setting.id == it.id) {
                             if (setting.isOpen) {
                                 bobaoText += it.name
-                                bobaoText += it.value
+                                bobaoText += getCarNum(it.name, it.value)
                             }
                         }
                     }
@@ -131,6 +131,23 @@ class CarenaResultActivity : BaseActivity() {
                 MyToastUtils.showToast("开始播报")
             }
         }
+    }
+
+
+    private fun getCarNum(name: String?, value: String?): String? {
+        name?.let {
+            if (it.contains("车牌号") || it.contains("号牌号码")) {
+                val builder = StringBuilder()
+                value?.map { data ->
+                    builder.append(data).append(". ")
+                }
+                return builder.toString()
+            }
+        }
+        if (value.isNullOrEmpty()) {
+            return ""
+        }
+        return value
     }
 
 

@@ -111,10 +111,15 @@ public class SystemTTS {
     private String syncNum(String text) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < text.length(); i++) {
-            String str = isNumber(String.valueOf(text.charAt(i))) ? text.charAt(i) + " " : String.valueOf(text.charAt(i));
+            String str = isEnOrNum(String.valueOf(text.charAt(i))) ? text.charAt(i) + " " : String.valueOf(text.charAt(i));
             builder.append(str);
         }
         return builder.toString();
+    }
+
+
+    private boolean isEnOrNum(String str){
+        return str.matches("^[0-9a-zA-Z]+$");
     }
 
 
